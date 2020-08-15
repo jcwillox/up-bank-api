@@ -1,14 +1,13 @@
 from datetime import datetime
 from json import JSONDecodeError
+from os import getenv
 from typing import List, Dict
 
 import requests
 
-from upbankapi.const import BASE_URL
-from upbankapi.exceptions import *
-from upbankapi.models import Account, Transaction
-
-from os import getenv
+from .const import BASE_URL
+from .exceptions import *
+from .models import Account, Transaction
 
 
 class Client:
