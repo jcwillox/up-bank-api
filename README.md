@@ -6,9 +6,9 @@ This is an unofficial python wrapper (client) for the australian bank up's API.
 * [Up API on Github](https://github.com/up-banking/api)
 
 ## Usage
-The code is fully typed and documented so I'd recommend just having a look at the code, or letting syntax completion take the wheel. The files of interest are [models.py]() and [client.py]().
+The code is fully typed and documented so I'd recommend just having a look at the code, or letting syntax completion take the wheel. The files of interest are [models.py](https://github.com/jcwillox/up-bank-api/blob/master/upbankapi/models.py) and [client.py](https://github.com/jcwillox/up-bank-api/blob/master/upbankapi/client.py).
 
-This is not yet a complete client and is missing some features, also up's API is still in beta so new features will likely still be added. You can track this libraries progress [here]().
+This is not yet a complete client and is missing some features, also up's API is still in beta so new features will likely still be added. You can track this libraries progress [here](https://github.com/jcwillox/up-bank-api/issues/1).
 
 To use this library you will need a personal access token which can be retrieved from https://developer.up.com.au. When using this library you can either provide the token directly or use the environment variable `UP_TOKEN`.
 
