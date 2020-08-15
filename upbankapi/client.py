@@ -14,7 +14,7 @@ class Client:
     def __init__(self, token: str = None):
         self._token = token if token else getenv("UP_TOKEN")
         self._session = requests.Session()
-        self._session.headers = {"Authorization": f"Bearer {token}"}
+        self._session.headers = {"Authorization": f"Bearer {self._token}"}
 
     def api(self, endpoint: str, method: str = "GET", params=None) -> Dict:
         """This method is used to directly interact the up bank api."""
