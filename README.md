@@ -1,11 +1,24 @@
 # Up Bank API
+
+[![Project version](https://img.shields.io/pypi/v/up-bank-api?style=flat-square)](https://pypi.python.org/pypi/up-bank-api)
+[![Supported python versions](https://img.shields.io/pypi/pyversions/up-bank-api?style=flat-square)](https://pypi.python.org/pypi/up-bank-api)
+[![License](https://img.shields.io/github/license/jcwillox/up-bank-api?style=flat-square)](https://github.com/jcwillox/up-bank-api/blob/master/LICENSE)
+[![Code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 This is an unofficial python wrapper (client) for the australian bank up's API.
 
-* 🕶️ [The Up Website](https://up.com.au)
-* 📖 [Up API Documentation](https://developer.up.com.au)
-* [Up API on Github](https://github.com/up-banking/api)
+- 🕶️ [The Up Website](https://up.com.au)
+- 📖 [Up API Documentation](https://developer.up.com.au)
+- [Up API on Github](https://github.com/up-banking/api)
+
+## Installation
+
+```shell
+$ pip install up-bank-api
+```
 
 ## Usage
+
 The code is fully typed and documented so I'd recommend just having a look at the code, or letting syntax completion take the wheel. The files of interest are [models.py](https://github.com/jcwillox/up-bank-api/blob/master/upbankapi/models.py) and [client.py](https://github.com/jcwillox/up-bank-api/blob/master/upbankapi/client.py).
 
 This is not yet a complete client and is missing some features, also up's API is still in beta so new features will likely still be added. You can track this libraries progress [here](https://github.com/jcwillox/up-bank-api/issues/1).
