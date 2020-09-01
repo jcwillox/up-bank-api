@@ -7,7 +7,7 @@ import requests
 
 from .const import BASE_URL
 from .exceptions import *
-from .models import Account, Transaction
+from .models import Account, Transaction, Webhook, WebhookLog, WebhookEvent
 
 
 class Client:
@@ -15,17 +15,22 @@ class Client:
         self._token = token if token else getenv("UP_TOKEN")
         self._session = requests.Session()
         self._session.headers = {"Authorization": f"Bearer {self._token}"}
+        self.webhook = WebhookAdapter(self)
 
-    def api(self, endpoint: str, method: str = "GET", params=None) -> Dict:
+    def api(
+        self, endpoint: str, method: str = "GET", body: Dict = None, params=None
+    ) -> Dict:
         """This method is used to directly interact the up bank api."""
         response = self._session.request(
-            method=method, params=params, url=f"{BASE_URL}{endpoint}"
+            method=method, json=body, params=params, url=f"{BASE_URL}{endpoint}"
         )
 
         if response.status_code == 401:
             raise NotAuthorizedException()
         elif response.status_code == 429:
             raise RateLimitExceededException()
+        elif response.status_code == 204:
+            return {}
 
         try:
             data = response.json()
@@ -74,3 +79,46 @@ class Client:
     def transaction(self, transaction_id: str):
         """Returns a single transaction by its unique id."""
         return Transaction(self.api(f"/transactions/{transaction_id}")["data"])
+
+    ### Webhooks ###
+    def webhooks(self, limit: int = 20) -> List[Webhook]:
+        """Returns a list of the users webhooks."""
+        webhooks = self.api("/webhooks", params={"page[size]": limit})["data"]
+        return [Webhook(self, webhook) for webhook in webhooks]
+
+
+class WebhookAdapter:
+    def __init__(self, client):
+        self._client = client
+
+    def __call__(self, webhook_id: str) -> Webhook:
+        """Returns a single webhook by its unique id."""
+        return self.get(webhook_id)
+
+    def get(self, webhook_id: str) -> Webhook:
+        """Returns a single webhook by its unique id."""
+        return Webhook(self._client, self._client.api(f"/webhooks/{webhook_id}")["data"])
+
+    def create(self, url: str, description: str = None) -> Webhook:
+        """Registers and returns a new webhook."""
+        response = self._client.api(
+            "/webhooks",
+            method="POST",
+            body={"data": {"attributes": {"url": url, "description": description}}},
+        )
+        return Webhook(self._client, response["data"])
+
+    def ping(self, webhook_id: str) -> WebhookEvent:
+        """Pings a webhook by its unique id."""
+        return WebhookEvent(self._client, self._client.api(f"/webhooks/{webhook_id}/ping", method="POST")["data"])
+
+    def logs(self, webhook_id: str, limit: int = 20):
+        """Returns the logs from a webhook by its unique id."""
+        logs = self._client.api(
+            f"/webhooks/{webhook_id}/logs", params={"page[size]": limit}
+        )["data"]
+        return [WebhookLog(self._client, log) for log in logs]
+
+    def delete(self, webhook_id: str):
+        """Deletes a webhook by its unique id."""
+        return self._client.api(f"/webhooks/{webhook_id}", method="DELETE")
