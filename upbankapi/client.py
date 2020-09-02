@@ -67,9 +67,9 @@ class Client:
         if status:
             params["filter[status]"] = status
         if since:
-            params["filter[since]"] = since.isoformat()
+            params["filter[since]"] = since.astimezone().isoformat()
         if until:
-            params["filter[until]"] = until.isoformat()
+            params["filter[until]"] = until.astimezone().isoformat()
         if category:
             params["filter[category]"] = category
         if tag:
