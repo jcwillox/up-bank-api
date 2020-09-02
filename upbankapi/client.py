@@ -25,17 +25,23 @@ class Client:
             method=method, json=body, params=params, url=f"{BASE_URL}{endpoint}"
         )
 
-        if response.status_code == 401:
-            raise NotAuthorizedException()
-        elif response.status_code == 429:
-            raise RateLimitExceededException()
-        elif response.status_code == 204:
+        data = response.json()
+
+        if response.status_code == 204:
             return {}
 
-        try:
-            data = response.json()
-        except JSONDecodeError:
-            raise BadResponseException()
+        if response.status_code >= 400:
+            try:
+                error = data["errors"][0]
+            except ValueError:
+                error = {}
+
+            if response.status_code == 401:
+                raise NotAuthorizedException(error)
+            elif response.status_code == 429:
+                raise RateLimitExceededException(error)
+
+            raise UpBankException(error)
 
         return data
 
@@ -103,7 +109,9 @@ class WebhookAdapter:
 
     def get(self, webhook_id: str) -> Webhook:
         """Returns a single webhook by its unique id."""
-        return Webhook(self._client, self._client.api(f"/webhooks/{webhook_id}")["data"])
+        return Webhook(
+            self._client, self._client.api(f"/webhooks/{webhook_id}")["data"]
+        )
 
     def create(self, url: str, description: str = None) -> Webhook:
         """Registers and returns a new webhook."""
@@ -116,7 +124,10 @@ class WebhookAdapter:
 
     def ping(self, webhook_id: str) -> WebhookEvent:
         """Pings a webhook by its unique id."""
-        return WebhookEvent(self._client, self._client.api(f"/webhooks/{webhook_id}/ping", method="POST")["data"])
+        return WebhookEvent(
+            self._client,
+            self._client.api(f"/webhooks/{webhook_id}/ping", method="POST")["data"],
+        )
 
     def logs(self, webhook_id: str, limit: int = 20):
         """Returns the logs from a webhook by its unique id."""
