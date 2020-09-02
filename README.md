@@ -44,6 +44,11 @@ except NotAuthorizedException:
 
 ## Examples
 
+* [Accounts](#accounts)
+* [Transactions](#transactions)
+* [Pagination](#pagination)
+* [Webhooks](#webhooks)
+
 ### Accounts
 
 ```python
@@ -80,17 +85,17 @@ savings.balance
 
 Get transactions across all accounts.
 ```python
->>> client.transactions()
+>>> list( client.transactions() )
 [<Transaction SETTLED: -1.0 AUD [7-Eleven]>, <Transaction SETTLED: 10.0 AUD [Interest]>]
 ```
 Get last 5 transactions for a given account id.
 ```python
 SAVINGS_ID = "d7cd1152-e78a-4ad7-8202-d27cddb02a28"
 
-client.account(SAVINGS_ID).transactions(limit=5)
+list( client.account(SAVINGS_ID).transactions(limit=5) )
 >>> [<Transaction SETTLED: 10.0 AUD [Interest]>]
 
-client.transactions(account_id=SAVINGS_ID, limit=5)
+list( client.transactions(account_id=SAVINGS_ID, limit=5) )
 >>> [<Transaction SETTLED: 10.0 AUD [Interest]>]
 ```
 Get a specific transaction.
@@ -99,11 +104,40 @@ client.transaction("17c577f2-ae8e-4622-90a7-87d95094c2a9")
 >>> <Transaction SETTLED: -1.0 AUD [7-Eleven]>
 ```
 
+### Pagination
+
+Up's API uses pagination, this means methods in this library that return more than one record will return a `PaginatedList`. This is effectively just an iterator. 
+Every `page_size` records the instance of `PaginatedList` will make a request for the next `page_size` records.
+
+A `limit` can be used to limit the maximum number of records returned, when a limit is specified the iterator will never return more than `limit` but can return less.
+Using `limit=None` will return all records.
+```python
+transactions = client.transactions(limit=5)
+
+for transaction in transactions:
+    print(transactions)
+
+print(transactions)
+>>> <upbankapi.PaginatedList.PaginatedList object at 0x05BCE670>
+
+print(list( transactions ))
+>>> [<Transaction SETTLED: -1.0 AUD [7-Eleven]>, <Transaction SETTLED: 10.0 AUD [Interest]>]
+```
+`PaginatedList` supports **slicing**, it still returns an iterator and will fetch the records as required.
+
+```python
+transactions = client.transactions(limit=20)
+list( transactions[10:20] )
+>>> [<Transaction ...>, ...]
+```
+> Note that while it may appear the slice `[:limit]` has the same effect as specifying a `limit`, it does not, when you specify a limit the code optimises the page size. 
+> For example, using the slice `[:5]` will fetch the first 20 records and return only 5, using `limit=5` it will fetch and return the first 5 records. However, if you manually specify `page_size=5` then both options have the safe effect.
+
 ### Webhooks
 
 List users webhooks
 ```python
-client.webhooks()
+list( client.webhooks() )
 >>> [<Webhook '1c3a4fd4-6c57-4aa8-8481-cf31a46bc001': https://mywebhook.tld/c2f89ed40e26c936 (Hello World!)>]
 ```
 
@@ -130,7 +164,7 @@ webhook.ping()
 >>> <WebhookEvent PING: webhook_id='1c3a4fd4-6c57-4aa8-8481-cf31a46bc001'>
 
 # get the webhooks logs
-webhook.logs()
+list( webhook.logs() )
 >>> [<WebhookLog BAD_RESPONSE_CODE: response_code=404>]
 
 # get the event associated with a log entry
