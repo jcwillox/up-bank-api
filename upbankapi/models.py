@@ -81,13 +81,21 @@ class Account:
     def transactions(
         self,
         limit: int = 20,
+        status: str = None,
         since: datetime = None,
         until: datetime = None,
+        category: str = None,
         tag: str = None,
     ) -> List[Transaction]:
         """Returns the transactions for this account."""
         return self._client.transactions(
-            limit=limit, since=since, until=until, tag=tag, account_id=self.id
+            limit=limit,
+            status=status,
+            since=since,
+            until=until,
+            category=category,
+            tag=tag,
+            account_id=self.id,
         )
 
     def __repr__(self) -> str:

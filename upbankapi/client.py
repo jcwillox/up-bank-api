@@ -55,17 +55,23 @@ class Client:
     def transactions(
         self,
         limit: int = 20,
+        status: str = None,
         since: datetime = None,
         until: datetime = None,
+        category: str = None,
         tag: str = None,
         account_id: str = None,
     ) -> List[Transaction]:
         """Returns transactions across all the users accounts."""
         params = {"page[size]": limit}
+        if status:
+            params["filter[status]"] = status
         if since:
             params["filter[since]"] = since.isoformat()
         if until:
             params["filter[until]"] = until.isoformat()
+        if category:
+            params["filter[category]"] = category
         if tag:
             params["filter[tag]"] = tag
 
