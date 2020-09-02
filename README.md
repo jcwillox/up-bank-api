@@ -131,7 +131,7 @@ list( transactions[10:20] )
 >>> [<Transaction ...>, ...]
 ```
 > Note that while it may appear the slice `[:limit]` has the same effect as specifying a `limit`, it does not, when you specify a limit the code optimises the page size. 
-> For example, using the slice `[:5]` will fetch the first 20 records and return only 5, using `limit=5` it will fetch and return the first 5 records. However, if you manually specify `page_size=5` then both options have the safe effect.
+> For example, using the slice `[:5]` will fetch the first 20 records and return only 5, using `limit=5` it will fetch and return the first 5 records. However, if you manually specify `page_size=5` then both options have the same effect.
 
 ### Webhooks
 
@@ -177,7 +177,7 @@ webhook.delete()
 
 When interacting with with a specific webhook there are two options.
 
-For example the two code blocks below have the same result (deleting the webhook), however the first option uses 2 requests and the second option uses only 1 request.
+For example the two code blocks below have the same result (deleting the webhook), however, the first option uses 2 requests and the second option uses only 1 request.
 This is because option 1 will request the webhook details, and then send the delete request. Option 2 directly sends the delete request.
 ```python
 # Option 1
