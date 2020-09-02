@@ -66,7 +66,7 @@ class Client:
             params["filter[since]"] = since.isoformat()
         if until:
             params["filter[until]"] = until.isoformat()
-        if until:
+        if tag:
             params["filter[tag]"] = tag
 
         endpoint = "/transactions"
