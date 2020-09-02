@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 
 PACKAGE_NAME = "up-bank-api"
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 PROJECT_URL = "https://github.com/jcwillox/up-bank-api"
 PROJECT_AUTHOR = "Joshua Cowie-Willox"
 DOWNLOAD_URL = f"{PROJECT_URL}/archive/{VERSION}.zip"
