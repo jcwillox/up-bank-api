@@ -1,12 +1,12 @@
 import json
 from datetime import datetime
-from typing import Optional, Dict, List, TYPE_CHECKING
+from typing import Optional, Dict, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Client
     from .PaginatedList import PaginatedList
 
-from .const import TRANSACTION_SETTLED
+from .const import TRANSACTION_SETTLED, DEFAULT_LIMIT, DEFAULT_PAGE_SIZE
 
 
 class ModelBase:
@@ -86,16 +86,27 @@ class Account(ModelBase):
 
     def transactions(
         self,
-        limit: int = 20,
+        limit: Optional[int] = DEFAULT_LIMIT,
+        page_size: int = DEFAULT_PAGE_SIZE,
         status: str = None,
         since: datetime = None,
         until: datetime = None,
         category: str = None,
         tag: str = None,
     ) -> "PaginatedList[Transaction]":
-        """Returns the transactions for this account."""
+        """Returns the transactions for this account.
+
+        :param limit maximum number of records to return (set to None for all transactions)
+        :param page_size number of records to fetch in each request (max 100)
+        :param status:
+        :param since:
+        :param until:
+        :param category:
+        :param tag:
+        """
         return self._client.transactions(
             limit=limit,
+            page_size=page_size,
             status=status,
             since=since,
             until=until,
@@ -135,9 +146,15 @@ class Webhook(ModelBase):
         """Sends a ping event to the webhook"""
         return self._client.webhook.ping(self.id)
 
-    def logs(self, limit: int = 20) -> List["WebhookLog"]:
-        """Returns the transactions for this account."""
-        return self._client.webhook.logs(self.id, limit=limit)
+    def logs(
+        self, limit: Optional[int] = DEFAULT_LIMIT, page_size: int = DEFAULT_PAGE_SIZE
+    ) -> PaginatedList["WebhookLog"]:
+        """Returns the logs of this webhook.
+
+        :param limit maximum number of records to return (set to None for all transactions)
+        :param page_size number of records to fetch in each request (max 100)
+        """
+        return self._client.webhook.logs(self.id, limit=limit, page_size=page_size)
 
     def delete(self):
         """Deletes the webhook."""

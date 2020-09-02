@@ -172,7 +172,7 @@ class WebhookAdapter:
         webhook_id: str,
         limit: Optional[int] = DEFAULT_LIMIT,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ):
+    ) -> PaginatedList[WebhookLog]:
         """Returns the logs from a webhook by id.
 
         :param webhook_id: unique id of a webhook
