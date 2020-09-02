@@ -1,11 +1,11 @@
 from datetime import datetime
-from json import JSONDecodeError
 from os import getenv
-from typing import List, Dict
+from typing import Optional
 
 import requests
 
-from .const import BASE_URL
+from .PaginatedList import PaginatedList
+from .const import BASE_URL, DEFAULT_PAGE_SIZE, DEFAULT_LIMIT
 from .exceptions import *
 from .models import Account, Transaction, Webhook, WebhookLog, WebhookEvent
 
@@ -49,10 +49,20 @@ class Client:
         """Returns the users unique id and will raise an exception if the token is not valid."""
         return self.api("/util/ping")["meta"]["id"]
 
-    def accounts(self, limit: int = 20) -> List[Account]:
-        """Returns a list of the users accounts."""
-        accounts = self.api("/accounts", params={"page[size]": limit})["data"]
-        return [Account(self, account) for account in accounts]
+    def accounts(
+        self, limit: Optional[int] = DEFAULT_LIMIT, page_size: int = DEFAULT_PAGE_SIZE,
+    ) -> PaginatedList[Account]:
+        """Returns a list of the users accounts.
+
+        :param limit maximum number of records to return (set to None for all transactions)
+        :param page_size number of records to fetch in each request (max 100)
+        """
+        if limit and limit < page_size:
+            page_size = limit
+
+        response = self.api("/accounts", params={"page[size]": page_size})
+        elements = [Account(self, account) for account in response["data"]]
+        return PaginatedList(self, Account, elements, response["links"]["next"], limit)
 
     def account(self, account_id: str) -> Account:
         """Returns a single account by its unique account id."""
@@ -60,16 +70,31 @@ class Client:
 
     def transactions(
         self,
-        limit: int = 20,
+        limit: Optional[int] = DEFAULT_LIMIT,
+        page_size: int = DEFAULT_PAGE_SIZE,
         status: str = None,
         since: datetime = None,
         until: datetime = None,
         category: str = None,
         tag: str = None,
         account_id: str = None,
-    ) -> List[Transaction]:
-        """Returns transactions across all the users accounts."""
-        params = {"page[size]": limit}
+    ) -> PaginatedList[Transaction]:
+        """Returns transactions for a specific account or all accounts.
+
+        :param limit maximum number of records to return (set to None for all transactions)
+        :param page_size number of records to fetch in each request (max 100)
+        :param status:
+        :param since:
+        :param until:
+        :param category:
+        :param tag:
+        :param account_id: optionally supply a unique id of the account to fetch transactions from
+        """
+        if limit and limit < page_size:
+            page_size = limit
+
+        params = {"page[size]": page_size}
+
         if status:
             params["filter[status]"] = status
         if since:
@@ -85,18 +110,31 @@ class Client:
         if account_id:
             endpoint = f"/accounts/{account_id}/transactions"
 
-        transactions = self.api(endpoint, params=params)["data"]
-        return [Transaction(transaction) for transaction in transactions]
+        response = self.api(endpoint, params=params)
+        elements = [Transaction(self, transaction) for transaction in response["data"]]
+        return PaginatedList(
+            self, Transaction, elements, response["links"]["next"], limit
+        )
 
     def transaction(self, transaction_id: str):
         """Returns a single transaction by its unique id."""
-        return Transaction(self.api(f"/transactions/{transaction_id}")["data"])
+        return Transaction(self, self.api(f"/transactions/{transaction_id}")["data"])
 
     ### Webhooks ###
-    def webhooks(self, limit: int = 20) -> List[Webhook]:
-        """Returns a list of the users webhooks."""
-        webhooks = self.api("/webhooks", params={"page[size]": limit})["data"]
-        return [Webhook(self, webhook) for webhook in webhooks]
+    def webhooks(
+        self, limit: Optional[int] = DEFAULT_LIMIT, page_size: int = DEFAULT_PAGE_SIZE
+    ) -> PaginatedList[Webhook]:
+        """Returns a list of the users webhooks.
+
+        :param limit maximum number of records to return (set to None for all transactions)
+        :param page_size number of records to fetch in each request (max 100)
+        """
+        if limit and limit < page_size:
+            page_size = limit
+
+        response = self.api("/webhooks", params={"page[size]": page_size})
+        elements = [Webhook(self, webhook) for webhook in response["data"]]
+        return PaginatedList(self, Webhook, elements, response["links"]["next"], limit)
 
 
 class WebhookAdapter:
@@ -129,12 +167,28 @@ class WebhookAdapter:
             self._client.api(f"/webhooks/{webhook_id}/ping", method="POST")["data"],
         )
 
-    def logs(self, webhook_id: str, limit: int = 20):
-        """Returns the logs from a webhook by its unique id."""
-        logs = self._client.api(
-            f"/webhooks/{webhook_id}/logs", params={"page[size]": limit}
-        )["data"]
-        return [WebhookLog(self._client, log) for log in logs]
+    def logs(
+        self,
+        webhook_id: str,
+        limit: Optional[int] = DEFAULT_LIMIT,
+        page_size: int = DEFAULT_PAGE_SIZE,
+    ):
+        """Returns the logs from a webhook by id.
+
+        :param webhook_id: unique id of a webhook
+        :param limit maximum number of records to return (set to None for all transactions)
+        :param page_size number of records to fetch in each request (max 100)
+        """
+        if limit and limit < page_size:
+            page_size = limit
+
+        response = self._client.api(
+            f"/webhooks/{webhook_id}/logs", params={"page[size]": page_size}
+        )
+        elements = [WebhookLog(self._client, log) for log in response["data"]]
+        return PaginatedList(
+            self._client, WebhookLog, elements, response["links"]["next"], limit
+        )
 
     def delete(self, webhook_id: str):
         """Deletes a webhook by its unique id."""

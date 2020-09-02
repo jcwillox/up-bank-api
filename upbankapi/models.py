@@ -4,11 +4,18 @@ from typing import Optional, Dict, List, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from . import Client
+    from .PaginatedList import PaginatedList
 
 from .const import TRANSACTION_SETTLED
 
 
-class Transaction:
+class ModelBase:
+    def __init__(self, client: "Client", data: Dict):
+        self._client = client
+        self.raw = data
+
+
+class Transaction(ModelBase):
     """Representation of a transaction
 
     id: the unique id of the transaction
@@ -24,8 +31,8 @@ class Transaction:
     raw: the raw serialised data from the api
     """
 
-    def __init__(self, data):
-        self.raw: Dict = data
+    def __init__(self, client: "Client", data):
+        super().__init__(client, data)
         self.id: str = data["id"]
 
         attributes = data["attributes"]
@@ -53,7 +60,7 @@ class Transaction:
         return f"<Transaction {self.status}: {self.amount} {self.currency} [{self.description}]>"
 
 
-class Account:
+class Account(ModelBase):
     """Representation of a transaction
 
     id: the unique id of the account
@@ -66,8 +73,7 @@ class Account:
     """
 
     def __init__(self, client: "Client", data: Dict):
-        self._client = client
-        self.raw: Dict = data
+        super().__init__(client, data)
         self.id: str = data["id"]
 
         attributes = data["attributes"]
@@ -86,7 +92,7 @@ class Account:
         until: datetime = None,
         category: str = None,
         tag: str = None,
-    ) -> List[Transaction]:
+    ) -> "PaginatedList[Transaction]":
         """Returns the transactions for this account."""
         return self._client.transactions(
             limit=limit,
@@ -103,7 +109,7 @@ class Account:
         return f"<Account '{self.name}' ({self.type}): {self.balance} {self.currency}>"
 
 
-class Webhook:
+class Webhook(ModelBase):
     """Representation of a webhook
 
     id: the unique id of the webhook
@@ -115,8 +121,7 @@ class Webhook:
     """
 
     def __init__(self, client: "Client", data: Dict):
-        self._client = client
-        self.raw: Dict = data
+        super().__init__(client, data)
         self.id: str = data["id"]
 
         attributes = data["attributes"]
@@ -145,7 +150,7 @@ class Webhook:
         return f"<Webhook '{self.id}': {self.url}>"
 
 
-class WebhookLog:
+class WebhookLog(ModelBase):
     """Representation of a webhook log entry
 
     id: the unique id of the log entry
@@ -158,8 +163,7 @@ class WebhookLog:
     """
 
     def __init__(self, client: "Client", data: Dict):
-        self._client = client
-        self.raw: Dict = data
+        super().__init__(client, data)
         self.id: str = data["id"]
 
         attributes = data["attributes"]
@@ -182,7 +186,7 @@ class WebhookLog:
         return f"<WebhookLog {self.delivery_status}>"
 
 
-class WebhookEvent:
+class WebhookEvent(ModelBase):
     """Representation of a webhook event
 
     id: the unique id of the event
@@ -194,8 +198,7 @@ class WebhookEvent:
     """
 
     def __init__(self, client: "Client", data: Dict):
-        self._client = client
-        self.raw: Dict = data
+        super().__init__(client, data)
         self.id: str = data["id"]
 
         attributes = data["attributes"]
