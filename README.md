@@ -3,6 +3,7 @@
 [![Project version](https://img.shields.io/pypi/v/up-bank-api?style=flat-square)](https://pypi.python.org/pypi/up-bank-api)
 [![Supported python versions](https://img.shields.io/pypi/pyversions/up-bank-api?style=flat-square)](https://pypi.python.org/pypi/up-bank-api)
 [![License](https://img.shields.io/github/license/jcwillox/up-bank-api?style=flat-square)](https://github.com/jcwillox/up-bank-api/blob/master/LICENSE)
+![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/jcwillox/up-bank-api?style=flat-square)
 [![Code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 This is an unofficial python wrapper (client) for the australian bank Up's API.
