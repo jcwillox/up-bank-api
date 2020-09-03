@@ -148,7 +148,7 @@ class Webhook(ModelBase):
 
     def logs(
         self, limit: Optional[int] = DEFAULT_LIMIT, page_size: int = DEFAULT_PAGE_SIZE
-    ) -> PaginatedList["WebhookLog"]:
+    ) -> "PaginatedList[WebhookLog]":
         """Returns the logs of this webhook.
 
         :param limit maximum number of records to return (set to None for all transactions)
