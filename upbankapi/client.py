@@ -1,12 +1,16 @@
 from datetime import datetime
 from os import getenv
-from typing import Optional
+from typing import Optional, Dict
 
 import requests
 
 from .PaginatedList import PaginatedList
 from .const import BASE_URL, DEFAULT_PAGE_SIZE, DEFAULT_LIMIT
-from .exceptions import *
+from .exceptions import (
+    NotAuthorizedException,
+    RateLimitExceededException,
+    UpBankException,
+)
 from .models import Account, Transaction, Webhook, WebhookLog, WebhookEvent
 
 
@@ -38,7 +42,7 @@ class Client:
 
             if response.status_code == 401:
                 raise NotAuthorizedException(error)
-            elif response.status_code == 429:
+            if response.status_code == 429:
                 raise RateLimitExceededException(error)
 
             raise UpBankException(error)

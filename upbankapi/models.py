@@ -1,15 +1,16 @@
 import json
 from datetime import datetime
 from typing import Optional, Dict, TYPE_CHECKING
+from .const import TRANSACTION_SETTLED, DEFAULT_LIMIT, DEFAULT_PAGE_SIZE
 
 if TYPE_CHECKING:
-    from . import Client
+    from .client import Client
     from .PaginatedList import PaginatedList
-
-from .const import TRANSACTION_SETTLED, DEFAULT_LIMIT, DEFAULT_PAGE_SIZE
 
 
 class ModelBase:
+    """Base class for all models."""
+
     def __init__(self, client: "Client", data: Dict):
         self._client = client
         self.raw = data

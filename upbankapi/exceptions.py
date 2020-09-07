@@ -3,7 +3,7 @@ from typing import Dict
 
 class UpBankException(Exception):
     """
-    Base class for all up specific exceptions,
+    Base class for all Up specific exceptions,
     this will not cover all possible exceptions such as network or JSON decoding errors.
     """
 
@@ -50,12 +50,12 @@ class UpBankException(Exception):
 
 
 class NotAuthorizedException(UpBankException):
-    pass
+    """Raised for an invalid Up token."""
 
 
 class RateLimitExceededException(UpBankException):
-    pass
+    """Raised when too many requests are made to the API."""
 
 
 class BadResponseException(UpBankException):
-    pass
+    """Raised when a response from the API is not formatted correctly."""
