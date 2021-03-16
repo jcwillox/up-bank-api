@@ -5,7 +5,7 @@ from .const import TRANSACTION_SETTLED, DEFAULT_LIMIT, DEFAULT_PAGE_SIZE
 
 if TYPE_CHECKING:
     from .client import Client
-    from .PaginatedList import PaginatedList
+    from .list import PaginatedList
 
 
 class ModelBase:
@@ -43,9 +43,11 @@ class Transaction(ModelBase):
         self.raw_text: Optional[str] = attributes["rawText"]
         self.description: str = attributes["description"]
         self.message: Optional[str] = attributes["message"]
-        self.settled_at: Optional[datetime] = datetime.fromisoformat(
-            attributes["settledAt"]
-        ) if attributes["settledAt"] else None
+        self.settled_at: Optional[datetime] = (
+            datetime.fromisoformat(attributes["settledAt"])
+            if attributes["settledAt"]
+            else None
+        )
         self.created_at: datetime = datetime.fromisoformat(attributes["createdAt"])
         self.amount: float = float(attributes["amount"]["value"])
         self.currency: str = attributes["amount"]["currencyCode"]

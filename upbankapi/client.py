@@ -4,7 +4,7 @@ from typing import Optional, Dict
 
 import requests
 
-from .PaginatedList import PaginatedList
+from .list import PaginatedList
 from .const import BASE_URL, DEFAULT_PAGE_SIZE, DEFAULT_LIMIT
 from .exceptions import (
     NotAuthorizedException,
@@ -54,7 +54,9 @@ class Client:
         return self.api("/util/ping")["meta"]["id"]
 
     def accounts(
-        self, limit: Optional[int] = DEFAULT_LIMIT, page_size: int = DEFAULT_PAGE_SIZE,
+        self,
+        limit: Optional[int] = DEFAULT_LIMIT,
+        page_size: int = DEFAULT_PAGE_SIZE,
     ) -> PaginatedList[Account]:
         """Returns a list of the users accounts.
 
