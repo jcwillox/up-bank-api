@@ -52,6 +52,22 @@ class Transaction(ModelBase):
         self.amount: float = float(attributes["amount"]["value"])
         self.currency: str = attributes["amount"]["currencyCode"]
 
+        relationships = data["relationships"]
+
+        self.category: Optional[str] = (
+            relationships["category"]["data"]["id"]
+            if relationships["category"]["data"]
+            else None
+        )
+        self.parentCategory: Optional[str] = (
+            relationships["parentCategory"]["data"]["id"]
+            if relationships["parentCategory"]["data"]
+            else None
+        )
+        self.tags: List[str] = [
+            tag["id"] for tag in relationships["tags"]["data"]
+        ]
+
     def format_desc(self):
         """Returns a formatted description using the transactions description and message."""
         if self.message:
