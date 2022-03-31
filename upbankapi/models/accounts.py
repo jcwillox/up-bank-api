@@ -2,8 +2,9 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, Optional, Union
 
-from . import PartialCategory, Tag, TransactionStatus
+from .categories import PartialCategory, Tag
 from .common import ModelBase
+from .transactions import TransactionStatus
 from ..const import DEFAULT_PAGE_SIZE
 
 
@@ -18,31 +19,31 @@ class OwnershipType(str, Enum):
 
 
 class Account(ModelBase):
-    """Representation of an Account"""
+    """Representation of an Account."""
 
-    # The unique identifier for this account.
     id: str
+    """The unique identifier for this account."""
 
-    # The name associated with the account in the Up application.
     name: str
+    """The name associated with the account in the Up application."""
 
-    # The bank account type of this account.
     type: AccountType
+    """The bank account type of this account."""
 
-    # The ownership structure for this account.
     ownership_type: OwnershipType
+    """The ownership structure for this account."""
 
-    # The available balance of the account, taking into account any amounts that are currently on hold.
     balance: float
+    """The available balance of the account, taking into account any amounts that are currently on hold."""
 
-    # The amount of money in the smallest denomination for the currency.
     balance_in_base_units: int
+    """The amount of money in the smallest denomination for the currency."""
 
-    # The ISO 4217 currency code.
     currency: str
+    """The ISO 4217 currency code."""
 
-    # The date-time at which this account was first opened.
     created_at: datetime
+    """The `datetime` at which this account was first opened."""
 
     def __parse__(self, attrs: Dict, relations: Dict, links: Optional[Dict]):
         self.name = attrs["displayName"]

@@ -4,30 +4,36 @@ from .common import ModelBase
 
 
 class Tag(ModelBase):
-    """Representation of a Tag"""
+    """Representation of a Tag."""
 
-    # The label of the tag, which also acts as the tag’s unique identifier.
     id: str
+    """The label of the tag, which also acts as the tags unique identifier."""
 
     def __str__(self):
         return self.id
 
 
 class PartialCategory(ModelBase):
-    """Representation of a PartialCategory"""
+    """Representation of a PartialCategory."""
 
-    # The unique identifier for this category. This is a human-readable but URL-safe value.
     id: str
+    """The unique identifier for this category.
+
+    This is a human-readable but URL-safe value.
+    """
 
     def __str__(self):
         return self.id
 
 
 class PartialCategoryParent(PartialCategory):
-    """Representation of a PartialCategoryParent"""
+    """Representation of a PartialCategoryParent.
 
-    # The parent category of this category, if it exists.
+    This is used when an API response includes a partial category and a partial parent.
+    """
+
     parent: Optional[PartialCategory]
+    """The parent category of this category, if it exists."""
 
     def __parse__(self, attrs: Dict, relations: Dict, **kwargs):
         if relations["parent"]["data"]:
@@ -35,13 +41,13 @@ class PartialCategoryParent(PartialCategory):
 
 
 class Category(PartialCategoryParent):
-    """Representation of a Category"""
+    """Representation of a Category."""
 
-    # The name of this category as seen in the Up application.
     name: str
+    """The name of this category as seen in the Up application."""
 
-    # The subcategories of this category.
     children: List[PartialCategory]
+    """The subcategories of this category."""
 
     def __parse__(self, attrs: Dict, relations: Dict, **kwargs):
         super().__parse__(attrs, relations, **kwargs)

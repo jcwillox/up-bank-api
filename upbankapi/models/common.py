@@ -7,11 +7,11 @@ if TYPE_CHECKING:
 class ModelBase:
     """Base class for all models."""
 
-    # The unique identifier of the model instance
     id: Optional[str]
+    """The unique identifier of the model instance."""
 
-    # The raw response data returned from the API
     raw_response: Dict
+    """The raw response data returned from the API."""
 
     _client: "ClientBase"
 
@@ -32,16 +32,16 @@ class ModelBase:
 
 
 class MoneyObject:
-    """Representation of a MoneyObject"""
+    """Representation of a MoneyObject."""
 
-    # The amount of money
     value: float
+    """The amount of money."""
 
-    # The amount of money in the smallest denomination for the currency
     value_in_base_units: int
+    """The amount of money in the smallest denomination for the currency."""
 
-    # The ISO 4217 currency code.
     currency: str
+    """The ISO 4217 currency code."""
 
     def __init__(self, data: Dict):
         self.value = data["value"]

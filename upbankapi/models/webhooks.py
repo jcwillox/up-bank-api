@@ -21,23 +21,25 @@ class WebhookEventType(str, Enum):
 
 
 class Webhook(ModelBase):
-    """Representation of a Webhook"""
+    """Representation of a Webhook."""
 
-    # The unique identifier for this webhook.
     id: str
+    """The unique identifier for this webhook."""
 
-    # The URL that this webhook is configured to `POST` events to.
     url: str
+    """The URL that this webhook is configured to `POST` events to."""
 
-    # An optional description that was provided at the time the webhook was created.
     description: Optional[str]
+    """An optional description that was provided at the time the webhook was created."""
 
-    # A shared secret key used to sign all webhook events sent to the configured webhook URL.
-    # This field is returned only once, upon the initial creation of the webhook.
     secret_key: Optional[str]
+    """A shared secret key used to sign all webhook events sent to the configured webhook URL.
 
-    # The date-time at which this webhook was created.
+    This field is returned only once, upon the initial creation of the webhook.
+    """
+
     created_at: datetime
+    """The `datetime` at which this webhook was created."""
 
     def __parse__(self, attrs: Dict, **kwargs):
         self.url = attrs["url"]
@@ -84,22 +86,22 @@ class WebhookResponse:
 
 
 class WebhookLog(ModelBase):
-    """Representation of a WebhookLog entry"""
+    """Representation of a WebhookLog entry."""
 
-    # The unique identifier for this log entry.
     id: str
+    """The unique identifier for this log entry."""
 
-    # The webhook event associated with this log entry
     event: "WebhookEvent"
+    """The webhook event associated with this log entry."""
 
-    # Information about the response that was received from the webhook URL.
     response: Optional[WebhookResponse]
+    """Information about the response that was received from the webhook URL."""
 
-    # The success or failure status of this delivery attempt.
     status: WebhookDeliveryStatus
+    """The success or failure status of this delivery attempt."""
 
-    # The date-time at which this log entry was created.
     created_at: datetime
+    """The `datetime` at which this log entry was created."""
 
     def __parse__(self, attrs: Dict, relations: Dict, **kwargs):
         self.event = WebhookEvent(
@@ -122,22 +124,22 @@ class WebhookLog(ModelBase):
 
 
 class WebhookEvent(ModelBase):
-    """Representation of a WebhookEvent"""
+    """Representation of a WebhookEvent."""
 
-    # The unique identifier for this event. This will remain constant across delivery retries.
     id: str
+    """The unique identifier for this event. This will remain constant across delivery retries."""
 
-    # The type of this event. This can be used to determine what action to take in response to the event.
     type: WebhookEventType
+    """The type of this event. This can be used to determine what action to take in response to the event."""
 
-    # The date-time at which this event was generated.
     created_at: datetime
+    """The `datetime` at which this event was generated."""
 
-    # The id of the webhook that that event was sent to.
     webhook_id: str
+    """The id of the webhook that that event was sent to."""
 
-    # The id of the transaction associated with this webhook
     transaction_id: Optional[str]
+    """The id of the transaction associated with this webhook."""
 
     def __parse__(self, attrs: Dict, relations: Dict, **kwargs):
         self.type = attrs["eventType"]

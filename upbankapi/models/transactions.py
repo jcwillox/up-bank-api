@@ -12,12 +12,16 @@ class TransactionStatus(str, Enum):
 
 
 class HoldInfo:
-    # The amount of this transaction while in the HELD status, in Australian dollars.
-    amount: MoneyObject
+    """Representation of the HoldInfo object returned by a `Transaction`."""
 
-    # The foreign currency amount of this transaction while in the HELD status.
-    # This field will be `None` for domestic transactions.
+    amount: MoneyObject
+    """The amount of this transaction while in the `HELD` status, in Australian dollars."""
+
     foreign_amount: Optional[MoneyObject]
+    """The foreign currency amount of this transaction while in the `HELD` status.
+
+    This field will be `None` for domestic transactions.
+    """
 
     def __init__(self, data: Dict):
         self.amount = MoneyObject(data["amount"])
@@ -26,12 +30,16 @@ class HoldInfo:
 
 
 class RoundUp:
-    # The total amount of this Round Up, including any boosts, represented as a negative value.
-    amount: MoneyObject
+    """Representation of the RoundUp object returned by a `Transaction`."""
 
-    # The portion of the Round Up amount owing to boosted Round Ups, represented as a negative value.
-    # If no boost was added to the Round Up this field will be `None`.
+    amount: MoneyObject
+    """The total amount of this Round Up, including any boosts, represented as a negative value."""
+
     boost_portion: Optional[MoneyObject]
+    """The portion of the Round Up amount owing to boosted Round Ups, represented as a negative value.
+
+    If no boost was added to the Round Up this field will be `None`.
+    """
 
     def __init__(self, data: Dict):
         self.amount = MoneyObject(data["amount"])
@@ -40,11 +48,13 @@ class RoundUp:
 
 
 class Cashback:
-    # A brief description of why this cashback was paid.
-    description: str
+    """Representation of the Cashback object returned by a `Transaction`."""
 
-    # The total amount of cashback paid, represented as a positive value.
+    description: str
+    """A brief description of why this cashback was paid."""
+
     amount: MoneyObject
+    """The total amount of cashback paid, represented as a positive value."""
 
     def __init__(self, data: Dict):
         self.amount = MoneyObject(data["amount"])
@@ -52,61 +62,70 @@ class Cashback:
 
 
 class Transaction(ModelBase):
-    """Representation of a Transaction"""
+    """Representation of a Transaction."""
 
-    # The unique identifier for this transaction.
     id: str
+    """The unique identifier for this transaction."""
 
-    # The current processing status of this transaction.
     status: TransactionStatus
+    """The current processing status of this transaction."""
 
-    # The original, unprocessed text of the transaction.
     raw_text: Optional[str]
+    """The original, unprocessed text of the transaction."""
 
-    # A short description for this transaction. Usually the merchant name for purchases.
     description: str
+    """A short description for this transaction. Usually the merchant name for purchases."""
 
-    # Attached message for this transaction, such as a payment message, or a transfer note.
     message: Optional[str]
+    """Attached message for this transaction, such as a payment message, or a transfer note."""
 
-    # The amount and foreign_amount of this transaction while it was/is in the HELD state.
     hold_info: Optional[HoldInfo]
+    """The amount and foreign_amount of this transaction while it was/is in the HELD state."""
 
-    # Details of how this transaction was rounded-up.
-    # If no Round Up was applied this field will be null.
     round_up: Optional[RoundUp]
+    """Details of how this transaction was rounded-up.
 
-    # Provides details of the reimbursement, if all or part of this
-    # transaction was instantly reimbursed in the form of cashback.
+    If no Round Up was applied this field will be null.
+    """
+
     cashback: Optional[Cashback]
+    """Provides details of the reimbursement if all or part of 
+    this transaction was instantly reimbursed in the form of cashback.
+    """
 
-    # The amount of this transaction in Australian dollars.
-    # For transactions that were once HELD but are now SETTLED, refer to the
-    # `hold_info` field for the original amount the transaction was HELD at.
     amount: float
+    """The amount of this transaction in Australian dollars.
 
-    # The amount of money in the smallest denomination for the currency.
+    For transactions that were once `HELD` but are now `SETTLED`, refer to the
+    `hold_info` field for the original amount the transaction was `HELD` at.
+    """
+
     amount_in_base_units: int
+    """The amount of money in the smallest denomination for the currency."""
 
-    # The ISO 4217 currency code.
     currency: str
+    """The ISO 4217 currency code."""
 
-    # The foreign currency amount of this transaction.
-    # This field will be `None` for domestic transactions.
     foreign_amount: Optional[MoneyObject]
+    """The foreign currency amount of this transaction.
 
-    # The date-time at which this transaction settled. This field will be `None`
-    # for transactions that are currently in the HELD status.
+    This field will be `None` for domestic transactions.
+    """
+
     settled_at: Optional[datetime]
+    """The `datetime` at which this transaction settled.
 
-    # The date-time at which this transaction was first encountered.
+    This field will be `None` for transactions that are currently in the `HELD` status.
+    """
+
     created_at: datetime
+    """The `datetime` at which this transaction was first encountered."""
 
-    # The category assigned to this transaction.
     category: Optional[PartialCategoryParent]
+    """The category assigned to this transaction."""
 
-    # The list of tags assigned to this transaction.
     tags: List[Tag]
+    """The list of tags assigned to this transaction."""
 
     def __parse__(self, attrs: Dict, relations: Dict, links: Optional[Dict]):
         self.status = attrs["status"]
