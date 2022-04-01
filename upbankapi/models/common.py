@@ -10,8 +10,12 @@ class ModelBase:
     id: Optional[str]
     """The unique identifier of the model instance."""
 
-    raw_response: Dict
-    """The raw response data returned from the API."""
+    _raw_response: Dict
+    """The raw response data returned from the API.
+
+    This should **not** be used, it is only available for intermediary use to access properties
+    that have not yet been exposed or to view the entire response.
+    """
 
     _client: "ClientBase"
 
@@ -23,7 +27,7 @@ class ModelBase:
             data = data["data"]
 
         self.id = data.get("id")
-        self.raw_response = data
+        self._raw_response = data
 
         self.__parse__(
             attrs=data.get("attributes"),
@@ -41,16 +45,12 @@ class ModelBase:
 class MoneyObject:
     """Representation of a MoneyObject."""
 
-    value: float
-    """The amount of money."""
-
-    value_in_base_units: int
-    """The amount of money in the smallest denomination for the currency."""
-
-    currency: str
-    """The ISO 4217 currency code."""
-
     def __init__(self, data: Dict):
-        self.value = data["value"]
-        self.value_in_base_units = data["valueInBaseUnits"]
-        self.currency = data["currencyCode"]
+        self.value: float = float(data["value"])
+        """The amount of money."""
+
+        self.value_in_base_units: int = data["valueInBaseUnits"]
+        """The amount of money in the smallest denomination for the currency."""
+
+        self.currency: str = data["currencyCode"]
+        """The ISO 4217 currency code."""

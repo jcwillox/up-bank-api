@@ -37,7 +37,7 @@ class PartialCategoryParent(PartialCategory):
 
     def __parse__(self, attrs: Dict, relations: Dict, links: Optional[Dict]):
         if relations["parent"]["data"]:
-            self.parent = PartialCategory(self._client, relations["parent"]["data"])
+            self.parent = PartialCategory(self._client, relations["parent"])
 
 
 class Category(PartialCategoryParent):
@@ -53,7 +53,7 @@ class Category(PartialCategoryParent):
         super().__parse__(attrs, relations, links)
         self.name = attrs["name"]
         self.children = [
-            PartialCategory(self._client, x) for x in relations["children"]["data"]
+            PartialCategory(self._client, x) for x in relations["children"]
         ]
 
     def __str__(self):

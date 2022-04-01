@@ -1,3 +1,4 @@
+"""Models used for deserializing the data from the API."""
 from .accounts import AccountType, OwnershipType, Account
 from .transactions import TransactionStatus, Transaction
 from .categories import Tag, PartialCategory, PartialCategoryParent, Category

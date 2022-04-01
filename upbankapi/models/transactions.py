@@ -14,17 +14,16 @@ class TransactionStatus(str, Enum):
 class HoldInfo:
     """Representation of the HoldInfo object returned by a `Transaction`."""
 
-    amount: MoneyObject
-    """The amount of this transaction while in the `HELD` status, in Australian dollars."""
-
-    foreign_amount: Optional[MoneyObject]
-    """The foreign currency amount of this transaction while in the `HELD` status.
-
-    This field will be `None` for domestic transactions.
-    """
-
     def __init__(self, data: Dict):
-        self.amount = MoneyObject(data["amount"])
+        self.amount: MoneyObject = MoneyObject(data["amount"])
+        """The amount of this transaction while in the `HELD` status, in Australian dollars."""
+
+        self.foreign_amount: Optional[MoneyObject] = None
+        """The foreign currency amount of this transaction while in the `HELD` status.
+
+        This field will be `None` for domestic transactions.
+        """
+
         if data["foreignAmount"]:
             self.foreign_amount = MoneyObject(data["foreignAmount"])
 
@@ -32,17 +31,16 @@ class HoldInfo:
 class RoundUp:
     """Representation of the RoundUp object returned by a `Transaction`."""
 
-    amount: MoneyObject
-    """The total amount of this Round Up, including any boosts, represented as a negative value."""
-
-    boost_portion: Optional[MoneyObject]
-    """The portion of the Round Up amount owing to boosted Round Ups, represented as a negative value.
-
-    If no boost was added to the Round Up this field will be `None`.
-    """
-
     def __init__(self, data: Dict):
-        self.amount = MoneyObject(data["amount"])
+        self.amount: MoneyObject = MoneyObject(data["amount"])
+        """The total amount of this Round Up, including any boosts, represented as a negative value."""
+
+        self.boost_portion: Optional[MoneyObject] = None
+        """The portion of the Round Up amount owing to boosted Round Ups, represented as a negative value.
+
+        If no boost was added to the Round Up this field will be `None`.
+        """
+
         if data["boostPortion"]:
             self.boost_portion = MoneyObject(data["boostPortion"])
 
@@ -50,15 +48,12 @@ class RoundUp:
 class Cashback:
     """Representation of the Cashback object returned by a `Transaction`."""
 
-    description: str
-    """A brief description of why this cashback was paid."""
-
-    amount: MoneyObject
-    """The total amount of cashback paid, represented as a positive value."""
-
     def __init__(self, data: Dict):
-        self.amount = MoneyObject(data["amount"])
-        self.description = data["description"]
+        self.amount: MoneyObject = MoneyObject(data["amount"])
+        """The total amount of cashback paid, represented as a positive value."""
+
+        self.description: str = data["description"]
+        """A brief description of why this cashback was paid."""
 
 
 class Transaction(ModelBase):

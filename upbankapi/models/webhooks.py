@@ -77,8 +77,13 @@ class Webhook(ModelBase):
 
 
 class WebhookResponse:
+    """Representation of a WebhookResponse."""
+
     status_code: int
+    """The HTTP status code received in the response."""
+
     body: str
+    """The payload that was received in the response body."""
 
     def __init__(self, data: Dict):
         self.status_code = data["statusCode"]
@@ -151,7 +156,7 @@ class WebhookEvent(ModelBase):
 
     def webhook(self):
         """Fetch the details of the associated webhook."""
-        return self._client.webhook(self.webhook_id)
+        return self._client.webhook.get(self.webhook_id)
 
     def transaction(self):
         """Fetch the details of the associated transaction."""
