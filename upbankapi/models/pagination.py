@@ -13,12 +13,11 @@ from typing import (
     Coroutine,
 )
 
-
-from .const import BASE_URL
-from .models.common import ModelBase
+from .common import ModelBase
+from ..const import BASE_URL
 
 if TYPE_CHECKING:
-    from .client import Client, AsyncClient
+    from ..client import Client, AsyncClient
 
 T = TypeVar("T", bound=ModelBase)
 
