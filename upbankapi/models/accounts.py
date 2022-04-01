@@ -1,10 +1,11 @@
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, TYPE_CHECKING
 
 from .categories import PartialCategory, Tag
 from .common import ModelBase
-from .transactions import TransactionStatus
+from .pagination import AsyncPaginatedList, PaginatedList
+from .transactions import TransactionStatus, Transaction
 from ..const import DEFAULT_PAGE_SIZE
 
 
@@ -64,7 +65,7 @@ class Account(ModelBase):
         tag: Union[str, Tag] = None,
         limit: Optional[int] = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ):
+    ) -> PaginatedList[Transaction]:
         """Returns transactions for this account.
 
         Arguments:
