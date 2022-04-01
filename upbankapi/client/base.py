@@ -64,7 +64,7 @@ class ClientBase(ABC):
         return self.api("/util/ping")
 
     @abstractmethod
-    def account(self, account_id: str) -> Account:
+    def account(self, account_id: str) -> Union[Account, Coroutine[Any, Any, Account]]:
         ...
 
     def _handle_account(self, account_id: str):
@@ -78,7 +78,9 @@ class ClientBase(ABC):
         *,
         limit: Optional[int] = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ) -> PaginatedList[Account]:
+    ) -> Union[
+        PaginatedList[Account], Coroutine[Any, Any, AsyncPaginatedList[Account]]
+    ]:
         ...
 
     def _handle_accounts(
@@ -101,7 +103,9 @@ class ClientBase(ABC):
         )
 
     @abstractmethod
-    def transaction(self, transaction_id: str) -> Transaction:
+    def transaction(
+        self, transaction_id: str
+    ) -> Union[Transaction, Coroutine[Any, Any, Transaction]]:
         ...
 
     def _handle_transaction(self, transaction_id: str):
@@ -157,7 +161,9 @@ class ClientBase(ABC):
     @abstractmethod
     def webhooks(
         self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
-    ) -> PaginatedList[Webhook]:
+    ) -> Union[
+        PaginatedList[Webhook], Coroutine[Any, Any, AsyncPaginatedList[Webhook]]
+    ]:
         ...
 
     def _handle_webhooks(
@@ -170,18 +176,20 @@ class WebhookAdapterBase(ABC):
     _client: ClientBase
 
     @abstractmethod
-    def __call__(self, webhook_id: str) -> Webhook:
+    def __call__(self, webhook_id: str) -> Union[Webhook, Coroutine[Any, Any, Webhook]]:
         ...
 
     @abstractmethod
-    def get(self, webhook_id: str) -> Webhook:
+    def get(self, webhook_id: str) -> Union[Webhook, Coroutine[Any, Any, Webhook]]:
         ...
 
     def _handle_get(self, webhook_id: str):
         return self._client.api(f"/webhooks/{webhook_id}")
 
     @abstractmethod
-    def create(self, url: str, description: str = None) -> Webhook:
+    def create(
+        self, url: str, description: str = None
+    ) -> Union[Webhook, Coroutine[Any, Any, Webhook]]:
         ...
 
     def _handle_create(self, url: str, description: str = None):
@@ -192,7 +200,9 @@ class WebhookAdapterBase(ABC):
         )
 
     @abstractmethod
-    def ping(self, webhook_id: str) -> WebhookEvent:
+    def ping(
+        self, webhook_id: str
+    ) -> Union[WebhookEvent, Coroutine[Any, Any, WebhookEvent]]:
         ...
 
     def _handle_ping(self, webhook_id: str):
@@ -205,7 +215,9 @@ class WebhookAdapterBase(ABC):
         *,
         limit: Optional[int] = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ) -> PaginatedList[WebhookLog]:
+    ) -> Union[
+        PaginatedList[WebhookLog], Coroutine[Any, Any, AsyncPaginatedList[WebhookLog]]
+    ]:
         ...
 
     def _handle_logs(
@@ -219,7 +231,7 @@ class WebhookAdapterBase(ABC):
         )
 
     @abstractmethod
-    def delete(self, webhook_id: str) -> Dict:
+    def delete(self, webhook_id: str) -> Union[Dict, Coroutine[Any, Any, Dict]]:
         ...
 
     def _handle_delete(self, webhook_id: str):
