@@ -11,6 +11,7 @@ from typing import (
     Optional,
     Any,
     Coroutine,
+    cast,
 )
 
 from .common import ModelBase
@@ -110,8 +111,13 @@ class PaginatedList(Generic[T]):
                     return
 
 
-class AsyncPaginatedList(PaginatedList):
+class AsyncPaginatedList(PaginatedList[T]):
     _client: "AsyncClient"
+
+    def __init__(
+        self, client: "AsyncClient", cls: Type[ModelBase], data: Dict, limit: int
+    ):
+        super().__init__(cast(Any, client), cls, data, limit)
 
     def __getitem__(
         self, index: Union[int, slice]
@@ -127,7 +133,7 @@ class AsyncPaginatedList(PaginatedList):
     def __iter__(self):
         raise NotImplemented("must be used with `async for`")
 
-    def __aiter__(self) -> AsyncIterator[T]:
+    async def __aiter__(self) -> AsyncIterator[T]:
         for element in self._elements:
             yield element
         while self.has_next:

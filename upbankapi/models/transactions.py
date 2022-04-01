@@ -146,18 +146,19 @@ class Transaction(ModelBase):
         self.amount_in_base_units = attrs["amount"]["valueInBaseUnits"]
         self.currency = attrs["amount"]["currencyCode"]
 
-        self.foreign_amount = MoneyObject(attrs["foreignAmount"])
+        if attrs["foreignAmount"]:
+            self.foreign_amount = MoneyObject(attrs["foreignAmount"])
 
         if attrs["settledAt"]:
             self.settled_at = datetime.fromisoformat(attrs["settledAt"])
         self.created_at = datetime.fromisoformat(attrs["createdAt"])
 
-        if attrs["category"]["data"]:
+        if relations["category"]["data"]:
             self.category = PartialCategoryParent(
                 self._client,
                 {
-                    "id": attrs["category"]["data"]["id"],
-                    "relationships": {"parent": attrs["parentCategory"]},
+                    "id": relations["category"]["data"]["id"],
+                    "relationships": {"parent": relations["parentCategory"]},
                 },
             )
 

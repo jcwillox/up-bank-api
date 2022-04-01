@@ -35,7 +35,7 @@ class PartialCategoryParent(PartialCategory):
     parent: Optional[PartialCategory]
     """The parent category of this category, if it exists."""
 
-    def __parse__(self, attrs: Dict, relations: Dict, **kwargs):
+    def __parse__(self, attrs: Dict, relations: Dict, links: Optional[Dict]):
         if relations["parent"]["data"]:
             self.parent = PartialCategory(self._client, relations["parent"]["data"])
 
@@ -49,8 +49,8 @@ class Category(PartialCategoryParent):
     children: List[PartialCategory]
     """The subcategories of this category."""
 
-    def __parse__(self, attrs: Dict, relations: Dict, **kwargs):
-        super().__parse__(attrs, relations, **kwargs)
+    def __parse__(self, attrs: Dict, relations: Dict, links: Optional[Dict]):
+        super().__parse__(attrs, relations, links)
         self.name = attrs["name"]
         self.children = [
             PartialCategory(self._client, x) for x in relations["children"]["data"]

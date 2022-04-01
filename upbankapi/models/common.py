@@ -17,11 +17,18 @@ class ModelBase:
 
     def __init__(self, client: "ClientBase", data: Dict):
         self._client = client
+
+        # strip data field from api response
+        if "data" in data:
+            data = data["data"]
+
         self.id = data.get("id")
         self.raw_response = data
 
         self.__parse__(
-            data.get("attributes"), data.get("relationships"), data.get("links")
+            attrs=data.get("attributes"),
+            relations=data.get("relationships"),
+            links=data.get("links"),
         )
 
     def __parse__(
