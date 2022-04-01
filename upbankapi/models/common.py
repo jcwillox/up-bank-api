@@ -1,7 +1,7 @@
 from typing import TYPE_CHECKING, Dict, Optional
 
 if TYPE_CHECKING:
-    from ..client import ClientBase
+    from ..client.base import ClientBase
 
 
 class ModelBase:

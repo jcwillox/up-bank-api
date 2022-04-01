@@ -8,6 +8,9 @@ from .pagination import AsyncPaginatedList, PaginatedList
 from .transactions import TransactionStatus, Transaction
 from ..const import DEFAULT_PAGE_SIZE
 
+if TYPE_CHECKING:
+    from .. import AsyncClient
+
 
 class AccountType(str, Enum):
     SAVER = "SAVER"
@@ -93,3 +96,29 @@ class Account(ModelBase):
     def __repr__(self) -> str:
         """Return the representation of the account."""
         return f"<Account '{self.name}' ({self.type}): {self.balance} {self.currency}>"
+
+
+class AsyncAccount(Account):
+    _client: "AsyncClient"
+
+    async def transactions(
+        self,
+        *,
+        status: TransactionStatus = None,
+        since: datetime = None,
+        until: datetime = None,
+        category: Union[str, PartialCategory] = None,
+        tag: Union[str, Tag] = None,
+        limit: Optional[int] = None,
+        page_size: int = DEFAULT_PAGE_SIZE,
+    ) -> AsyncPaginatedList[Transaction]:
+        return await self._client.transactions(
+            account=self,
+            status=status,
+            since=since,
+            until=until,
+            category=category,
+            tag=tag,
+            limit=limit,
+            page_size=page_size,
+        )
