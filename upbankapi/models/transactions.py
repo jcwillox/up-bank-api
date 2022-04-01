@@ -11,6 +11,17 @@ class TransactionStatus(str, Enum):
     SETTLED = "SETTLED"
 
 
+class CardPurchaseMethodEnum(str, Enum):
+    BAR_CODE = "BAR_CODE"
+    OCR = "OCR"
+    CARD_PIN = "CARD_PIN"
+    CARD_DETAILS = "CARD_DETAILS"
+    CARD_ON_FILE = "CARD_ON_FILE"
+    ECOMMERCE = "ECOMMERCE"
+    MAGNETIC_STRIPE = "MAGNETIC_STRIPE"
+    CONTACTLESS = "CONTACTLESS"
+
+
 class HoldInfo:
     """Representation of the HoldInfo object returned by a `Transaction`."""
 
@@ -56,6 +67,17 @@ class Cashback:
         """A brief description of why this cashback was paid."""
 
 
+class CardPurchaseMethod:
+    """Representation of the CardPurchaseMethod object returned by a `Transaction`."""
+
+    def __init__(self, data: Dict):
+        self.method: CardPurchaseMethodEnum = data["method"]
+        """The type of card purchase."""
+
+        self.card_suffix: Optional[str] = data["cardNumberSuffix"]
+        """The last four digits of the card used for the purchase, if applicable."""
+
+
 class Transaction(ModelBase):
     """Representation of a Transaction."""
 
@@ -73,6 +95,9 @@ class Transaction(ModelBase):
 
     message: Optional[str]
     """Attached message for this transaction, such as a payment message, or a transfer note."""
+
+    categorizable: bool
+    """Boolean flag set to `true` on transactions that support the use of categories."""
 
     hold_info: Optional[HoldInfo]
     """The amount and foreign_amount of this transaction while it was/is in the HELD state."""
@@ -107,6 +132,9 @@ class Transaction(ModelBase):
     This field will be `None` for domestic transactions.
     """
 
+    card_purchase_method: Optional[CardPurchaseMethod]
+    """Information about the card used for this transaction, if applicable."""
+
     settled_at: Optional[datetime]
     """The `datetime` at which this transaction settled.
 
@@ -127,6 +155,7 @@ class Transaction(ModelBase):
         self.raw_text = attrs["rawText"]
         self.description = attrs["description"]
         self.message = attrs["message"]
+        self.categorizable = attrs["isCategorizable"]
 
         if attrs["holdInfo"]:
             self.hold_info = HoldInfo(attrs["holdInfo"])
@@ -143,6 +172,9 @@ class Transaction(ModelBase):
 
         if attrs["foreignAmount"]:
             self.foreign_amount = MoneyObject(attrs["foreignAmount"])
+
+        if attrs["cardPurchaseMethod"]:
+            self.card_purchase_method = CardPurchaseMethod(attrs["cardPurchaseMethod"])
 
         if attrs["settledAt"]:
             self.settled_at = datetime.fromisoformat(attrs["settledAt"])
