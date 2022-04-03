@@ -7,7 +7,7 @@ if TYPE_CHECKING:
 class ModelBase:
     """Base class for all models."""
 
-    id: Optional[str]
+    id: Optional[str] = None
     """The unique identifier of the model instance."""
 
     _raw_response: Dict
@@ -54,3 +54,6 @@ class MoneyObject:
 
         self.currency: str = data["currencyCode"]
         """The ISO 4217 currency code."""
+
+    def __repr__(self):
+        return f"<MoneyObject {self.value} {self.currency}>"

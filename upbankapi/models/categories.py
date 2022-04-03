@@ -9,8 +9,8 @@ class Tag(ModelBase):
     id: str
     """The label of the tag, which also acts as the tags unique identifier."""
 
-    def __str__(self):
-        return self.id
+    def __repr__(self):
+        return f"<Tag id='{self.id}'>"
 
 
 class PartialCategory(ModelBase):
@@ -22,8 +22,8 @@ class PartialCategory(ModelBase):
     This is a human-readable but URL-safe value.
     """
 
-    def __str__(self):
-        return self.id
+    def __repr__(self):
+        return f"<PartialCategory id='{self.id}'>"
 
 
 class PartialCategoryParent(PartialCategory):
@@ -32,12 +32,17 @@ class PartialCategoryParent(PartialCategory):
     This is used when an API response includes a partial category and a partial parent.
     """
 
-    parent: Optional[PartialCategory]
+    parent: Optional[PartialCategory] = None
     """The parent category of this category, if it exists."""
 
     def __parse__(self, attrs: Dict, relations: Dict, links: Optional[Dict]):
         if relations["parent"]["data"]:
             self.parent = PartialCategory(self._client, relations["parent"])
+
+    def __repr__(self):
+        if self.parent:
+            return f"<PartialCategoryParent id='{self.id}' parent='{self.parent.id}'>"
+        return f"<PartialCategoryParent id='{self.id}'>"
 
 
 class Category(PartialCategoryParent):
@@ -53,8 +58,10 @@ class Category(PartialCategoryParent):
         super().__parse__(attrs, relations, links)
         self.name = attrs["name"]
         self.children = [
-            PartialCategory(self._client, x) for x in relations["children"]
+            PartialCategory(self._client, x) for x in relations["children"]["data"]
         ]
 
-    def __str__(self):
-        return self.name
+    def __repr__(self):
+        if self.parent:
+            return f"<Category '{self.name}': id='{self.id}' parent='{self.parent.id}'>"
+        return f"<Category '{self.name}': id='{self.id}'>"

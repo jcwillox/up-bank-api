@@ -29,10 +29,10 @@ class Webhook(ModelBase):
     url: str
     """The URL that this webhook is configured to `POST` events to."""
 
-    description: Optional[str]
+    description: Optional[str] = None
     """An optional description that was provided at the time the webhook was created."""
 
-    secret_key: Optional[str]
+    secret_key: Optional[str] = None
     """A shared secret key used to sign all webhook events sent to the configured webhook URL.
 
     This field is returned only once, upon the initial creation of the webhook.
@@ -79,15 +79,15 @@ class Webhook(ModelBase):
 class WebhookResponse:
     """Representation of a WebhookResponse."""
 
-    status_code: int
-    """The HTTP status code received in the response."""
-
-    body: str
-    """The payload that was received in the response body."""
-
     def __init__(self, data: Dict):
-        self.status_code = data["statusCode"]
-        self.body = data["body"]
+        self.status_code: int = data["statusCode"]
+        """The HTTP status code received in the response."""
+
+        self.body: str = data["body"]
+        """The payload that was received in the response body."""
+
+    def __repr__(self):
+        return f"<WebhookResponse {self.status_code}>"
 
 
 class WebhookLog(ModelBase):
@@ -99,7 +99,7 @@ class WebhookLog(ModelBase):
     event: "WebhookEvent"
     """The webhook event associated with this log entry."""
 
-    response: Optional[WebhookResponse]
+    response: Optional[WebhookResponse] = None
     """Information about the response that was received from the webhook URL."""
 
     status: WebhookDeliveryStatus
@@ -143,7 +143,7 @@ class WebhookEvent(ModelBase):
     webhook_id: str
     """The id of the webhook that that event was sent to."""
 
-    transaction_id: Optional[str]
+    transaction_id: Optional[str] = None
     """The id of the transaction associated with this webhook."""
 
     def __parse__(self, attrs: Dict, relations: Dict, **kwargs):

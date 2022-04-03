@@ -38,6 +38,11 @@ class HoldInfo:
         if data["foreignAmount"]:
             self.foreign_amount = MoneyObject(data["foreignAmount"])
 
+    def __repr__(self):
+        if self.foreign_amount:
+            return f"<HoldInfo {self.amount.value} {self.amount.currency}: foreign_amount='{self.foreign_amount.value} {self.foreign_amount.currency}'>"
+        return f"<HoldInfo {self.amount.value} {self.amount.currency}>"
+
 
 class RoundUp:
     """Representation of the RoundUp object returned by a `Transaction`."""
@@ -55,6 +60,11 @@ class RoundUp:
         if data["boostPortion"]:
             self.boost_portion = MoneyObject(data["boostPortion"])
 
+    def __repr__(self):
+        if self.boost_portion:
+            return f"<RoundUp {self.amount.value} {self.amount.currency}: boost_portion='{self.boost_portion.value} {self.boost_portion.currency}'>"
+        return f"<RoundUp {self.amount.value} {self.amount.currency}>"
+
 
 class Cashback:
     """Representation of the Cashback object returned by a `Transaction`."""
@@ -65,6 +75,9 @@ class Cashback:
 
         self.description: str = data["description"]
         """A brief description of why this cashback was paid."""
+
+    def __repr__(self):
+        return f"<Cashback {self.amount.value} {self.amount.currency}>"
 
 
 class CardPurchaseMethod:
@@ -77,6 +90,13 @@ class CardPurchaseMethod:
         self.card_suffix: Optional[str] = data["cardNumberSuffix"]
         """The last four digits of the card used for the purchase, if applicable."""
 
+    def __repr__(self):
+        if self.card_suffix:
+            return (
+                f"<CardPurchaseMethod {self.method}: card_suffix='{self.card_suffix}'>"
+            )
+        return f"<CardPurchaseMethod {self.method}>"
+
 
 class Transaction(ModelBase):
     """Representation of a Transaction."""
@@ -87,28 +107,28 @@ class Transaction(ModelBase):
     status: TransactionStatus
     """The current processing status of this transaction."""
 
-    raw_text: Optional[str]
+    raw_text: Optional[str] = None
     """The original, unprocessed text of the transaction."""
 
     description: str
     """A short description for this transaction. Usually the merchant name for purchases."""
 
-    message: Optional[str]
+    message: Optional[str] = None
     """Attached message for this transaction, such as a payment message, or a transfer note."""
 
     categorizable: bool
     """Boolean flag set to `true` on transactions that support the use of categories."""
 
-    hold_info: Optional[HoldInfo]
+    hold_info: Optional[HoldInfo] = None
     """The amount and foreign_amount of this transaction while it was/is in the HELD state."""
 
-    round_up: Optional[RoundUp]
+    round_up: Optional[RoundUp] = None
     """Details of how this transaction was rounded-up.
 
     If no Round Up was applied this field will be null.
     """
 
-    cashback: Optional[Cashback]
+    cashback: Optional[Cashback] = None
     """Provides details of the reimbursement if all or part of 
     this transaction was instantly reimbursed in the form of cashback.
     """
@@ -126,16 +146,16 @@ class Transaction(ModelBase):
     currency: str
     """The ISO 4217 currency code."""
 
-    foreign_amount: Optional[MoneyObject]
+    foreign_amount: Optional[MoneyObject] = None
     """The foreign currency amount of this transaction.
 
     This field will be `None` for domestic transactions.
     """
 
-    card_purchase_method: Optional[CardPurchaseMethod]
+    card_purchase_method: Optional[CardPurchaseMethod] = None
     """Information about the card used for this transaction, if applicable."""
 
-    settled_at: Optional[datetime]
+    settled_at: Optional[datetime] = None
     """The `datetime` at which this transaction settled.
 
     This field will be `None` for transactions that are currently in the `HELD` status.
@@ -144,7 +164,7 @@ class Transaction(ModelBase):
     created_at: datetime
     """The `datetime` at which this transaction was first encountered."""
 
-    category: Optional[PartialCategoryParent]
+    category: Optional[PartialCategoryParent] = None
     """The category assigned to this transaction."""
 
     tags: List[Tag]
