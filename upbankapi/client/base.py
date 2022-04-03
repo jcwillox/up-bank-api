@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from os import getenv
-from typing import Union, Dict, Coroutine, Any, Optional
+from typing import Union, Dict, Coroutine, Any, Optional, List
 
 from ..const import DEFAULT_PAGE_SIZE
 from ..exceptions import (
@@ -20,6 +20,7 @@ from ..models import (
     PartialCategory,
     WebhookEvent,
     WebhookLog,
+    Category,
 )
 from ..models.pagination import PaginatedList, AsyncPaginatedList
 from ..utils import Filters
@@ -63,6 +64,7 @@ class ClientBase(ABC):
     def _handle_ping(self):
         return self.api("/util/ping")
 
+    ### ACCOUNTS ###
     @abstractmethod
     def account(self, account_id: str) -> Union[Account, Coroutine[Any, Any, Account]]:
         ...
@@ -102,6 +104,115 @@ class ClientBase(ABC):
             ),
         )
 
+    ### CATEGORIES ###
+    @abstractmethod
+    def category(
+        self, category_id: str
+    ) -> Union[Category, Coroutine[Any, Any, Category]]:
+        ...
+
+    def _handle_category(self, category_id: str):
+        return self.api(f"/categories/{category_id}")
+
+    @abstractmethod
+    def categories(
+        self, parent: Union[str, PartialCategory]
+    ) -> Union[List[Category], Coroutine[Any, Any, Category]]:
+        ...
+
+    def _handle_categories(self, parent: Union[str, PartialCategory]):
+        filters = Filters()
+        if parent:
+            if isinstance(parent, str):
+                filters.filter("parent", parent)
+            else:
+                filters.filter("parent", parent.id)
+        return self.api("/categories", params=filters)
+
+    @abstractmethod
+    def categorize(
+        self,
+        transaction: Union[str, Transaction],
+        category: Optional[Union[str, PartialCategory]],
+    ) -> Union[bool, Coroutine[Any, Any, bool]]:
+        ...
+
+    def _handle_categorize(
+        self,
+        transaction: Union[str, Transaction],
+        category: Optional[Union[str, PartialCategory]],
+    ):
+        if isinstance(transaction, Transaction):
+            if not transaction.categorizable:
+                raise ValueError("Transaction is not categorizable.")
+            transaction = transaction.id
+
+        body = {"data": None}
+        if category:
+            if isinstance(category, PartialCategory):
+                category = category.id
+
+            body["data"] = {"type": "categories", "id": category}
+
+        return self.api(
+            f"/transactions/{transaction}/relationships/category",
+            method="PATCH",
+            body=body,
+        )
+
+    ### TAGS ###
+    @abstractmethod
+    def tags(
+        self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
+    ) -> Union[PaginatedList[Tag], Coroutine[Any, Any, AsyncPaginatedList[Tag]]]:
+        ...
+
+    def _handle_tags(
+        self, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
+    ):
+        return self.api("/tags", params=Filters(page_size, limit))
+
+    @abstractmethod
+    def add_tags(
+        self, transaction: Union[str, Transaction], *tags: Tag
+    ) -> Union[bool, Coroutine[Any, Any, bool]]:
+        ...
+
+    def _handle_add_tags(
+        self, transaction: Union[str, Transaction], *tags: Union[str, Tag]
+    ):
+        return self._handle_add_remove_tags("POST", transaction, *tags)
+
+    @abstractmethod
+    def remove_tags(
+        self, transaction: Union[str, Transaction], *tags: Union[str, Tag]
+    ) -> Union[bool, Coroutine[Any, Any, bool]]:
+        ...
+
+    def _handle_remove_tags(
+        self, transaction: Union[str, Transaction], *tags: Union[str, Tag]
+    ):
+        return self._handle_add_remove_tags("DELETE", transaction, *tags)
+
+    def _handle_add_remove_tags(
+        self, method: str, transaction: Union[str, Transaction], *tags: Union[str, Tag]
+    ):
+        if isinstance(transaction, Transaction):
+            transaction = transaction.id
+
+        body = []
+        for tag in tags:
+            if isinstance(tag, Tag):
+                tag = tag.id
+            body.append({"type": "tags", "id": tag})
+
+        return self.api(
+            f"/transactions/{transaction}/relationships/tags",
+            method=method,
+            body={"data": body},
+        )
+
+    ### TRANSACTIONS ###
     @abstractmethod
     def transaction(
         self, transaction_id: str
@@ -158,6 +269,7 @@ class ClientBase(ABC):
             endpoint = f"/accounts/{account}/transactions"
         return self.api(endpoint, params=filters)
 
+    ### WEBHOOKS ###
     @abstractmethod
     def webhooks(
         self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE

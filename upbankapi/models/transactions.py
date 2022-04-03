@@ -1,8 +1,8 @@
 from datetime import datetime
 from enum import Enum
-from typing import Dict, Optional, List
+from typing import Dict, Optional, List, Union
 
-from .categories import Tag, PartialCategoryParent
+from .categories import Tag, PartialCategoryParent, PartialCategory
 from .common import ModelBase, MoneyObject
 
 
@@ -203,6 +203,58 @@ class Transaction(ModelBase):
             return f"{self.description}: {self.message}"
         return self.description
 
+    def categorize(self, category: Optional[Union[str, PartialCategory]]) -> bool:
+        """Assign a category to a transaction.
+
+        Arguments:
+            category: The category to assign to the transaction.
+                      Setting this to `None` will de-categorize the transaction.
+        """
+        return self._client.categorize(self, category=None)
+
+    def add_tags(self, *tags: Tag) -> bool:
+        """Add tags to a given transaction.
+
+        Arguments:
+            *tags: The tags or tag ids to add to the transaction.
+        """
+        return self._client.add_tags(self, *tags)
+
+    def remove_tags(self, *tags: Union[str, Tag]) -> bool:
+        """Remove tags from a given transaction.
+
+        Arguments:
+            *tags: The tags or tag ids to remove to the transaction.
+        """
+        return self._client.remove_tags(self, *tags)
+
     def __repr__(self) -> str:
         """Return the representation of the transaction."""
         return f"<Transaction {self.status}: {self.amount} {self.currency} [{self.description}]>"
+
+
+class AsyncTransaction(Transaction):
+    async def categorize(self, category: Optional[Union[str, PartialCategory]]) -> bool:
+        """Assign a category to a transaction.
+
+        Arguments:
+            category: The category to assign to the transaction.
+                      Setting this to `None` will de-categorize the transaction.
+        """
+        return await self._client.categorize(self, category=None)
+
+    async def add_tags(self, *tags: Tag) -> bool:
+        """Add tags to a given transaction.
+
+        Arguments:
+            *tags: The tags or tag ids to add to the transaction.
+        """
+        return await self._client.add_tags(self, *tags)
+
+    async def remove_tags(self, *tags: Union[str, Tag]) -> bool:
+        """Remove tags from a given transaction.
+
+        Arguments:
+            *tags: The tags or tag ids to remove to the transaction.
+        """
+        return await self._client.remove_tags(self, *tags)

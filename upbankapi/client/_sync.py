@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Union, Optional
+from typing import Dict, Union, Optional, List
 
 import requests
 
@@ -16,6 +16,7 @@ from ..models import (
     Webhook,
     WebhookEvent,
     WebhookLog,
+    Category,
 )
 from ..models.pagination import PaginatedList
 
@@ -80,6 +81,75 @@ class Client(ClientBase):
             self._handle_accounts(type, ownership_type, limit, page_size),
             limit,
         )
+
+    def category(self, category_id: str) -> Category:
+        """Returns a category by its unique category id.
+
+        Arguments:
+            category_id: The unique identifier for a category.
+        """
+        return Category(self, self._handle_category(category_id))
+
+    def categories(self, parent: Union[str, PartialCategory] = None) -> List[Category]:
+        """Returns a list of categories.
+
+        Arguments:
+            parent: The parent category/id to filter categories by.
+                    Raises exception for invalid category.
+        """
+        return [Category(self, x) for x in self._handle_categories(parent)["data"]]
+
+    def categorize(
+        self,
+        transaction: Union[str, Transaction],
+        category: Optional[Union[str, PartialCategory]],
+    ) -> bool:
+        """Assign a category to a transaction.
+
+        Arguments:
+            transaction: The transaction/id to change the category on.
+                         The transaction must be categorizable otherwise
+                         a `ValueError` will be raised.
+            category: The category to assign to the transaction.
+                      Setting this to `None` will de-categorize the transaction.
+        """
+        return self._handle_categorize(transaction, category)
+
+    def tags(
+        self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
+    ) -> PaginatedList[Tag]:
+        """Returns a list of the users tags.
+
+        Arguments:
+            limit: The maximum number of records to return.
+            page_size: The number of records to return in each page. (max appears to be 100)
+        """
+        return PaginatedList(
+            self,
+            Tag,
+            self._handle_tags(limit, page_size),
+            limit,
+        )
+
+    def add_tags(self, transaction: Union[str, Transaction], *tags: Tag) -> bool:
+        """Add tags to a given transaction.
+
+        Arguments:
+            transaction: The transaction/id to add tags on.
+            *tags: The tags or tag ids to add to the transaction.
+        """
+        return self._handle_add_tags(transaction, *tags)
+
+    def remove_tags(
+        self, transaction: Union[str, Transaction], *tags: Union[str, Tag]
+    ) -> bool:
+        """Remove tags from a given transaction.
+
+        Arguments:
+            transaction: The transaction/id to remove tags on.
+            *tags: The tags or tag ids to remove to the transaction.
+        """
+        return self._handle_remove_tags(transaction, *tags)
 
     def transaction(self, transaction_id: str) -> Transaction:
         """Returns a single transaction by its unique id.

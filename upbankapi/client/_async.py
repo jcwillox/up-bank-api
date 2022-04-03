@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Optional, Union, Coroutine, Any
+from typing import Dict, Optional, Union, Coroutine, Any, List
 
 from .base import ClientBase, WebhookAdapterBase
 from ..const import BASE_URL, DEFAULT_PAGE_SIZE
@@ -14,9 +14,11 @@ from ..models import (
     Webhook,
     WebhookEvent,
     WebhookLog,
+    Category,
 )
 from ..models.accounts import AsyncAccount
 from ..models.pagination import AsyncPaginatedList
+from ..models.transactions import AsyncTransaction
 
 try:
     import aiohttp
@@ -56,13 +58,13 @@ class AsyncClient(ClientBase):
         """Returns the users unique id and will raise an exception if the token is not valid."""
         return (await self._handle_ping())["meta"]["id"]
 
-    async def account(self, account_id: str) -> Account:
+    async def account(self, account_id: str) -> AsyncAccount:
         """Returns a single account by its unique account id.
 
         Arguments:
             account_id: The unique identifier for an account.
         """
-        return Account(self, await self._handle_account(account_id))
+        return AsyncAccount(self, await self._handle_account(account_id))
 
     async def accounts(
         self,
@@ -89,13 +91,86 @@ class AsyncClient(ClientBase):
             limit,
         )
 
-    async def transaction(self, transaction_id: str) -> Transaction:
+    async def category(self, category_id: str) -> Category:
+        """Returns a category by its unique category id.
+
+        Arguments:
+            category_id: The unique identifier for a category.
+        """
+        return Category(self, await self._handle_category(category_id))
+
+    async def categories(
+        self, parent: Union[str, PartialCategory] = None
+    ) -> List[Category]:
+        """Returns a list of categories.
+
+        Arguments:
+            parent: The parent category/id to filter categories by.
+                    Raises exception for invalid category.
+        """
+        return [
+            Category(self, x) for x in (await self._handle_categories(parent))["data"]
+        ]
+
+    async def categorize(
+        self,
+        transaction: Union[str, Transaction],
+        category: Optional[Union[str, PartialCategory]],
+    ) -> bool:
+        """Assign a category to a transaction.
+
+        Arguments:
+            transaction: The transaction/id to change the category on.
+                         The transaction must be categorizable otherwise
+                         a `ValueError` will be raised.
+            category: The category to assign to the transaction.
+                      Setting this to `None` will de-categorize the transaction.
+        """
+        return await self._handle_categorize(transaction, category)
+
+    async def tags(
+        self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
+    ) -> AsyncPaginatedList[Tag]:
+        """Returns a list of the users tags.
+
+        Arguments:
+            limit: The maximum number of records to return.
+            page_size: The number of records to return in each page. (max appears to be 100)
+        """
+        return AsyncPaginatedList(
+            self,
+            Tag,
+            await self._handle_tags(limit, page_size),
+            limit,
+        )
+
+    async def add_tags(self, transaction: Union[str, Transaction], *tags: Tag) -> bool:
+        """Add tags to a given transaction.
+
+        Arguments:
+            transaction: The transaction/id to add tags on.
+            *tags: The tags or tag ids to add to the transaction.
+        """
+        return await self._handle_add_tags(transaction, *tags)
+
+    async def remove_tags(
+        self, transaction: Union[str, Transaction], *tags: Union[str, Tag]
+    ) -> bool:
+        """Remove tags from a given transaction.
+
+        Arguments:
+            transaction: The transaction/id to remove tags on.
+            *tags: The tags or tag ids to remove to the transaction.
+        """
+        return await self._handle_remove_tags(transaction, *tags)
+
+    async def transaction(self, transaction_id: str) -> AsyncTransaction:
         """Returns a single transaction by its unique id.
 
         Arguments:
             transaction_id: The unique identifier for a transaction.
         """
-        return Transaction(self, await self._handle_transaction(transaction_id))
+        return AsyncTransaction(self, await self._handle_transaction(transaction_id))
 
     async def transactions(
         self,
@@ -108,7 +183,7 @@ class AsyncClient(ClientBase):
         tag: Union[str, Tag] = None,
         limit: Optional[int] = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ) -> AsyncPaginatedList[Transaction]:
+    ) -> AsyncPaginatedList[AsyncTransaction]:
         """Returns transactions for a specific account or all accounts.
 
         Arguments:
@@ -126,7 +201,7 @@ class AsyncClient(ClientBase):
         """
         return AsyncPaginatedList(
             self,
-            Transaction,
+            AsyncTransaction,
             await self._handle_transactions(
                 account, status, since, until, category, tag, limit, page_size
             ),
