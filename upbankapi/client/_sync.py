@@ -30,10 +30,10 @@ class Client(ClientBase):
         super().__init__(token)
         self.webhook = WebhookAdapter(self)
         if session:
-            self.session = session
+            self._session = session
         else:
-            self.session = requests.Session()
-        self.session.headers.update({"Authorization": f"Bearer {self._token}"})
+            self._session = requests.Session()
+        self._session.headers.update({"Authorization": f"Bearer {self._token}"})
 
     def api(
         self,
@@ -42,7 +42,7 @@ class Client(ClientBase):
         body: Dict = None,
         params: Dict = None,
     ) -> Dict:
-        response = self.session.request(
+        response = self._session.request(
             method=method, json=body, params=params, url=f"{BASE_URL}{endpoint}"
         )
         return self._handle_response(response.json(), response.status_code)

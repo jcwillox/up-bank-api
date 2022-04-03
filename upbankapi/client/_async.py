@@ -37,10 +37,16 @@ class AsyncClient(ClientBase):
         super().__init__(token)
         self.webhook = AsyncWebhookAdapter(self)
         if session:
-            self.session = session
+            self._session = session
         else:
-            self.session = aiohttp.ClientSession()
-        self.session.headers.update({"Authorization": f"Bearer {self._token}"})
+            self._session = aiohttp.ClientSession()
+        self._session.headers.update({"Authorization": f"Bearer {self._token}"})
+
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self._session.close()
 
     async def api(
         self,
@@ -49,7 +55,7 @@ class AsyncClient(ClientBase):
         body: Dict = None,
         params: Dict = None,
     ) -> Dict:
-        async with self.session.request(
+        async with self._session.request(
             method=method, json=body, params=params, url=f"{BASE_URL}{endpoint}"
         ) as response:
             return self._handle_response(await response.json(), response.status)
