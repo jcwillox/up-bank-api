@@ -1,0 +1,35 @@
+name: "Publish"
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    name: "Publish"
+    runs-on: ubuntu-latest
+    concurrency: release-${{ github.ref }}
+    steps:
+      - name: "Checkout the repository"
+        uses: actions/checkout@v2
+
+      - name: "Update Metadata"
+        id: metadata
+        uses: ./.github/actions/metadata
+
+      - name: "Setup Python"
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ steps.metadata.outputs.python }}
+          cache: ${{ !env.ACT && 'pip' || '' }}
+
+      - name: "Install pypa/build"
+        run: pip install build --user
+
+      - name: "Build Package"
+        run: python -m build --sdist --wheel .
+
+      - name: "Publish to PyPI 📦"
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
