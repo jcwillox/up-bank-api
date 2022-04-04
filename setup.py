@@ -1,6 +1,4 @@
-from setuptools import find_packages, setup
-
-PACKAGES = find_packages(exclude=["tests", "tests.*"])
+from setuptools import setup
 
 REQUIRES = [
     "requests>=2.22.0,<3",
@@ -28,20 +26,6 @@ EXTRAS_REQUIRE = {
     "async": ASYNC_REQUIRE,
 }
 
-
+# we still specify requirements in here so PyCharm will pick them up.
 if __name__ == "__main__":
-    setup(
-        packages=PACKAGES,
-        install_requires=REQUIRES,
-        tests_require=TESTS_REQUIRE,
-        extras_require=EXTRAS_REQUIRE,
-        python_requires=">=3.7",
-        classifiers=[
-            "Programming Language :: Python :: 3.7",
-            "Programming Language :: Python :: 3.8",
-            "Programming Language :: Python :: 3.9",
-            "Programming Language :: Python :: 3.10",
-            "License :: OSI Approved :: MIT License",
-            "Operating System :: OS Independent",
-        ],
-    )
+    setup(install_requires=REQUIRES, extras_require=EXTRAS_REQUIRE)

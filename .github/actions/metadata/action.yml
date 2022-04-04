@@ -10,5 +10,5 @@ runs:
     - id: metadata
       shell: bash
       run: |
-        echo ::set-output name=python::$(cat setup.py | grep -oE 'python_requires=.+?([0-9.]+)' | cut -d "=" -f 3)
+        echo ::set-output name=python::$(cat setup.cfg | grep -oE 'python_requires = .+?([0-9.]+)' | cut -d "=" -f 3)
         echo "description = ${{ github.event.repository.description }}" >> setup.cfg
