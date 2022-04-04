@@ -58,8 +58,7 @@ class PaginatedList(Generic[T]):
             for element in new_elements:
                 yield element
 
-    @property
-    def count(self):
+    def __len__(self):
         return len(self._elements)
 
     @property
@@ -67,7 +66,7 @@ class PaginatedList(Generic[T]):
         if not self._next_url:
             return False
         if self._limit:
-            return self.count < self._limit
+            return len(self._elements) < self._limit
         return True
 
     def _fetch_to(self, index):
@@ -87,7 +86,7 @@ class PaginatedList(Generic[T]):
 
         # ensure we don't return more elements than the limit
         if self._limit:
-            diff = self.count + len(new_elements) - self._limit
+            diff = len(self._elements) + len(new_elements) - self._limit
             if diff > 0:
                 new_elements = new_elements[: diff - 1]
 
@@ -104,7 +103,7 @@ class PaginatedList(Generic[T]):
         def __iter__(self) -> Iterator[T]:
             index = self.__start
             while self.__end and index < self.__end:
-                if self.__list.count > index or self.__list.has_next:
+                if len(self.__list) > index or self.__list.has_next:
                     yield self.__list[index]
                     index += self.__step
                 else:
@@ -158,7 +157,7 @@ class AsyncPaginatedList(PaginatedList[T]):
         async def __aiter__(self) -> AsyncIterator[T]:
             index = self.__start
             while self.__end and index < self.__end:
-                if self.__list.count > index or self.__list.has_next:
+                if len(self.__list) > index or self.__list.has_next:
                     yield await self.__list[index]
                     index += self.__step
                 else:
