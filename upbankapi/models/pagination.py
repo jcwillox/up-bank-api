@@ -130,7 +130,7 @@ class AsyncPaginatedList(PaginatedList[T]):
         return self._elements[index]
 
     def __iter__(self):
-        raise NotImplemented("must be used with `async for`")
+        raise NotImplementedError("must be used with `async for`")
 
     async def __aiter__(self) -> AsyncIterator[T]:
         for element in self._elements:

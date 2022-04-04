@@ -39,7 +39,6 @@ class ModelBase:
         self, attrs: Optional[Dict], relations: Optional[Dict], links: Optional[Dict]
     ):
         """Parse the data retrieved from the API"""
-        pass
 
 
 class MoneyObject:
