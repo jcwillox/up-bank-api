@@ -41,7 +41,7 @@ class Client(ClientBase):
         method: str = "GET",
         body: Dict = None,
         params: Dict = None,
-    ) -> Dict:
+    ) -> Union[bool, Dict]:
         response = self._session.request(
             method=method, json=body, params=params, url=f"{BASE_URL}{endpoint}"
         )
@@ -272,7 +272,7 @@ class WebhookAdapter(WebhookAdapterBase):
             limit,
         )
 
-    def delete(self, webhook_id: str) -> Dict:
+    def delete(self, webhook_id: str) -> bool:
         """Deletes a webhook by its unique id.
 
         Arguments:

@@ -35,13 +35,13 @@ class ClientBase(ABC):
     @abstractmethod
     def api(
         self, endpoint: str, method: str = "GET", body: Dict = None, params=None
-    ) -> Union[Dict, Coroutine[Any, Any, Dict]]:
+    ) -> Union[bool, Dict, Coroutine[Any, Any, Union[bool, Dict]]]:
         ...
 
     @staticmethod
-    def _handle_response(data: Dict, status: int) -> Dict:
+    def _handle_response(data: Dict, status: int) -> Union[bool, Dict]:
         if status == 204:
-            return {}
+            return True
 
         if status >= 400:
             try:
@@ -343,7 +343,7 @@ class WebhookAdapterBase(ABC):
         )
 
     @abstractmethod
-    def delete(self, webhook_id: str) -> Union[Dict, Coroutine[Any, Any, Dict]]:
+    def delete(self, webhook_id: str) -> Union[bool, Coroutine[Any, Any, bool]]:
         ...
 
     def _handle_delete(self, webhook_id: str):

@@ -54,7 +54,7 @@ class AsyncClient(ClientBase):
         method: str = "GET",
         body: Dict = None,
         params: Dict = None,
-    ) -> Dict:
+    ) -> Union[bool, Dict]:
         async with self._session.request(
             method=method, json=body, params=params, url=f"{BASE_URL}{endpoint}"
         ) as response:
@@ -291,7 +291,7 @@ class AsyncWebhookAdapter(WebhookAdapterBase):
             limit,
         )
 
-    async def delete(self, webhook_id: str) -> Dict:
+    async def delete(self, webhook_id: str) -> bool:
         """Deletes a webhook by its unique id.
 
         Arguments:
