@@ -1,0 +1,87 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.up.com.au/api/v1/categories/personal
+  response:
+    body:
+      yaml:
+        data:
+          attributes:
+            name: Personal
+          id: personal
+          links:
+            self: https://api.up.com.au/api/v1/categories/personal
+          relationships:
+            children:
+              data:
+              - id: family
+                type: categories
+              - id: clothing-and-accessories
+                type: categories
+              - id: education-and-student-loans
+                type: categories
+              - id: fitness-and-wellbeing
+                type: categories
+              - id: gifts-and-charity
+                type: categories
+              - id: hair-and-beauty
+                type: categories
+              - id: health-and-medical
+                type: categories
+              - id: investments
+                type: categories
+              - id: life-admin
+                type: categories
+              - id: mobile-phone
+                type: categories
+              - id: news-magazines-and-books
+                type: categories
+              - id: technology
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=personal
+            parent:
+              data: null
+          type: categories
+    headers:
+      Alt-Svc:
+      - clear
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept, Origin
+      Via:
+      - 1.1 google
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+    url: https://api.up.com.au/api/v1/categories/personal
+version: 1

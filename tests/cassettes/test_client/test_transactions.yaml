@@ -1,0 +1,107 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.up.com.au/api/v1/transactions?page%5Bsize%5D=20
+  response:
+    body:
+      yaml:
+        data:
+        - attributes:
+            amount:
+              currencyCode: AUD
+              value: '-11.95'
+              valueInBaseUnits: -1195
+            cardPurchaseMethod:
+              cardNumberSuffix: '1234'
+              method: ECOMMERCE
+            cashback: null
+            createdAt: '2022-03-19T06:03:29+11:00'
+            description: Spotify
+            foreignAmount: null
+            holdInfo:
+              amount:
+                currencyCode: AUD
+                value: '-11.95'
+                valueInBaseUnits: -1195
+              foreignAmount: null
+            isCategorizable: true
+            message: null
+            rawText: Spotify 0123456789
+            roundUp: null
+            settledAt: null
+            status: HELD
+          id: 34642cf9-7017-41b4-ac52-98f955d5fe48
+          links:
+            self: https://api.up.com.au/api/v1/transactions/34642cf9-7017-41b4-ac52-98f955d5fe48
+          relationships:
+            account:
+              data:
+                id: d7967cba-0894-47f8-bbbc-c152b0d9e46f
+                type: accounts
+              links:
+                related: https://api.up.com.au/api/v1/accounts/d7967cba-0894-47f8-bbbc-c152b0d9e46f
+            category:
+              data:
+                id: tv-and-music
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/tv-and-music
+                self: https://api.up.com.au/api/v1/transactions/34642cf9-7017-41b4-ac52-98f955d5fe48/relationships/category
+            parentCategory:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+            tags:
+              data: []
+              links:
+                self: https://api.up.com.au/api/v1/transactions/34642cf9-7017-41b4-ac52-98f955d5fe48/relationships/tags
+            transferAccount:
+              data: null
+          type: transactions
+        links:
+          next: null
+          prev: null
+    headers:
+      Alt-Svc:
+      - clear
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept, Origin
+      Via:
+      - 1.1 google
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+    url: https://api.up.com.au/api/v1/transactions?page%5Bsize%5D=20
+version: 1

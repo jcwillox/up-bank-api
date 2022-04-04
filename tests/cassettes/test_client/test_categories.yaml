@@ -1,0 +1,862 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.up.com.au/api/v1/categories
+  response:
+    body:
+      yaml:
+        data:
+        - attributes:
+            name: Apps, Games & Software
+          id: games-and-software
+          links:
+            self: https://api.up.com.au/api/v1/categories/games-and-software
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=games-and-software
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Car Insurance, Rego & Maintenance
+          id: car-insurance-and-maintenance
+          links:
+            self: https://api.up.com.au/api/v1/categories/car-insurance-and-maintenance
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=car-insurance-and-maintenance
+            parent:
+              data:
+                id: transport
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/transport
+          type: categories
+        - attributes:
+            name: Children & Family
+          id: family
+          links:
+            self: https://api.up.com.au/api/v1/categories/family
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=family
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Good Life
+          id: good-life
+          links:
+            self: https://api.up.com.au/api/v1/categories/good-life
+          relationships:
+            children:
+              data:
+              - id: games-and-software
+                type: categories
+              - id: booze
+                type: categories
+              - id: events-and-gigs
+                type: categories
+              - id: hobbies
+                type: categories
+              - id: holidays-and-travel
+                type: categories
+              - id: lottery-and-gambling
+                type: categories
+              - id: pubs-and-bars
+                type: categories
+              - id: restaurants-and-cafes
+                type: categories
+              - id: takeaway
+                type: categories
+              - id: tobacco-and-vaping
+                type: categories
+              - id: tv-and-music
+                type: categories
+              - id: adult
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=good-life
+            parent:
+              data: null
+          type: categories
+        - attributes:
+            name: Groceries
+          id: groceries
+          links:
+            self: https://api.up.com.au/api/v1/categories/groceries
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=groceries
+            parent:
+              data:
+                id: home
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/home
+          type: categories
+        - attributes:
+            name: Booze
+          id: booze
+          links:
+            self: https://api.up.com.au/api/v1/categories/booze
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=booze
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Clothing & Accessories
+          id: clothing-and-accessories
+          links:
+            self: https://api.up.com.au/api/v1/categories/clothing-and-accessories
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=clothing-and-accessories
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Cycling
+          id: cycling
+          links:
+            self: https://api.up.com.au/api/v1/categories/cycling
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=cycling
+            parent:
+              data:
+                id: transport
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/transport
+          type: categories
+        - attributes:
+            name: Homeware & Appliances
+          id: homeware-and-appliances
+          links:
+            self: https://api.up.com.au/api/v1/categories/homeware-and-appliances
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=homeware-and-appliances
+            parent:
+              data:
+                id: home
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/home
+          type: categories
+        - attributes:
+            name: Personal
+          id: personal
+          links:
+            self: https://api.up.com.au/api/v1/categories/personal
+          relationships:
+            children:
+              data:
+              - id: family
+                type: categories
+              - id: clothing-and-accessories
+                type: categories
+              - id: education-and-student-loans
+                type: categories
+              - id: fitness-and-wellbeing
+                type: categories
+              - id: gifts-and-charity
+                type: categories
+              - id: hair-and-beauty
+                type: categories
+              - id: health-and-medical
+                type: categories
+              - id: investments
+                type: categories
+              - id: life-admin
+                type: categories
+              - id: mobile-phone
+                type: categories
+              - id: news-magazines-and-books
+                type: categories
+              - id: technology
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=personal
+            parent:
+              data: null
+          type: categories
+        - attributes:
+            name: Education & Student Loans
+          id: education-and-student-loans
+          links:
+            self: https://api.up.com.au/api/v1/categories/education-and-student-loans
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=education-and-student-loans
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Events & Gigs
+          id: events-and-gigs
+          links:
+            self: https://api.up.com.au/api/v1/categories/events-and-gigs
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=events-and-gigs
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Fuel
+          id: fuel
+          links:
+            self: https://api.up.com.au/api/v1/categories/fuel
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=fuel
+            parent:
+              data:
+                id: transport
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/transport
+          type: categories
+        - attributes:
+            name: Home
+          id: home
+          links:
+            self: https://api.up.com.au/api/v1/categories/home
+          relationships:
+            children:
+              data:
+              - id: groceries
+                type: categories
+              - id: homeware-and-appliances
+                type: categories
+              - id: internet
+                type: categories
+              - id: home-maintenance-and-improvements
+                type: categories
+              - id: pets
+                type: categories
+              - id: home-insurance-and-rates
+                type: categories
+              - id: rent-and-mortgage
+                type: categories
+              - id: utilities
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=home
+            parent:
+              data: null
+          type: categories
+        - attributes:
+            name: Internet
+          id: internet
+          links:
+            self: https://api.up.com.au/api/v1/categories/internet
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=internet
+            parent:
+              data:
+                id: home
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/home
+          type: categories
+        - attributes:
+            name: Fitness & Wellbeing
+          id: fitness-and-wellbeing
+          links:
+            self: https://api.up.com.au/api/v1/categories/fitness-and-wellbeing
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=fitness-and-wellbeing
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Hobbies
+          id: hobbies
+          links:
+            self: https://api.up.com.au/api/v1/categories/hobbies
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=hobbies
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Maintenance & Improvements
+          id: home-maintenance-and-improvements
+          links:
+            self: https://api.up.com.au/api/v1/categories/home-maintenance-and-improvements
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=home-maintenance-and-improvements
+            parent:
+              data:
+                id: home
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/home
+          type: categories
+        - attributes:
+            name: Parking
+          id: parking
+          links:
+            self: https://api.up.com.au/api/v1/categories/parking
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=parking
+            parent:
+              data:
+                id: transport
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/transport
+          type: categories
+        - attributes:
+            name: Transport
+          id: transport
+          links:
+            self: https://api.up.com.au/api/v1/categories/transport
+          relationships:
+            children:
+              data:
+              - id: car-insurance-and-maintenance
+                type: categories
+              - id: cycling
+                type: categories
+              - id: fuel
+                type: categories
+              - id: parking
+                type: categories
+              - id: public-transport
+                type: categories
+              - id: car-repayments
+                type: categories
+              - id: taxis-and-share-cars
+                type: categories
+              - id: toll-roads
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=transport
+            parent:
+              data: null
+          type: categories
+        - attributes:
+            name: Gifts & Charity
+          id: gifts-and-charity
+          links:
+            self: https://api.up.com.au/api/v1/categories/gifts-and-charity
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=gifts-and-charity
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Holidays & Travel
+          id: holidays-and-travel
+          links:
+            self: https://api.up.com.au/api/v1/categories/holidays-and-travel
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=holidays-and-travel
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Pets
+          id: pets
+          links:
+            self: https://api.up.com.au/api/v1/categories/pets
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=pets
+            parent:
+              data:
+                id: home
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/home
+          type: categories
+        - attributes:
+            name: Public Transport
+          id: public-transport
+          links:
+            self: https://api.up.com.au/api/v1/categories/public-transport
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=public-transport
+            parent:
+              data:
+                id: transport
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/transport
+          type: categories
+        - attributes:
+            name: Hair & Beauty
+          id: hair-and-beauty
+          links:
+            self: https://api.up.com.au/api/v1/categories/hair-and-beauty
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=hair-and-beauty
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Lottery & Gambling
+          id: lottery-and-gambling
+          links:
+            self: https://api.up.com.au/api/v1/categories/lottery-and-gambling
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=lottery-and-gambling
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Rates & Insurance
+          id: home-insurance-and-rates
+          links:
+            self: https://api.up.com.au/api/v1/categories/home-insurance-and-rates
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=home-insurance-and-rates
+            parent:
+              data:
+                id: home
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/home
+          type: categories
+        - attributes:
+            name: Repayments
+          id: car-repayments
+          links:
+            self: https://api.up.com.au/api/v1/categories/car-repayments
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=car-repayments
+            parent:
+              data:
+                id: transport
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/transport
+          type: categories
+        - attributes:
+            name: Health & Medical
+          id: health-and-medical
+          links:
+            self: https://api.up.com.au/api/v1/categories/health-and-medical
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=health-and-medical
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Pubs & Bars
+          id: pubs-and-bars
+          links:
+            self: https://api.up.com.au/api/v1/categories/pubs-and-bars
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=pubs-and-bars
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Rent & Mortgage
+          id: rent-and-mortgage
+          links:
+            self: https://api.up.com.au/api/v1/categories/rent-and-mortgage
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=rent-and-mortgage
+            parent:
+              data:
+                id: home
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/home
+          type: categories
+        - attributes:
+            name: Taxis & Share Cars
+          id: taxis-and-share-cars
+          links:
+            self: https://api.up.com.au/api/v1/categories/taxis-and-share-cars
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=taxis-and-share-cars
+            parent:
+              data:
+                id: transport
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/transport
+          type: categories
+        - attributes:
+            name: Investments
+          id: investments
+          links:
+            self: https://api.up.com.au/api/v1/categories/investments
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=investments
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Restaurants & Cafes
+          id: restaurants-and-cafes
+          links:
+            self: https://api.up.com.au/api/v1/categories/restaurants-and-cafes
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=restaurants-and-cafes
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Tolls
+          id: toll-roads
+          links:
+            self: https://api.up.com.au/api/v1/categories/toll-roads
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=toll-roads
+            parent:
+              data:
+                id: transport
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/transport
+          type: categories
+        - attributes:
+            name: Utilities
+          id: utilities
+          links:
+            self: https://api.up.com.au/api/v1/categories/utilities
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=utilities
+            parent:
+              data:
+                id: home
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/home
+          type: categories
+        - attributes:
+            name: Life Admin
+          id: life-admin
+          links:
+            self: https://api.up.com.au/api/v1/categories/life-admin
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=life-admin
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Takeaway
+          id: takeaway
+          links:
+            self: https://api.up.com.au/api/v1/categories/takeaway
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=takeaway
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Mobile Phone
+          id: mobile-phone
+          links:
+            self: https://api.up.com.au/api/v1/categories/mobile-phone
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=mobile-phone
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: Tobacco & Vaping
+          id: tobacco-and-vaping
+          links:
+            self: https://api.up.com.au/api/v1/categories/tobacco-and-vaping
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=tobacco-and-vaping
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: News, Magazines & Books
+          id: news-magazines-and-books
+          links:
+            self: https://api.up.com.au/api/v1/categories/news-magazines-and-books
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=news-magazines-and-books
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+        - attributes:
+            name: TV, Music & Streaming
+          id: tv-and-music
+          links:
+            self: https://api.up.com.au/api/v1/categories/tv-and-music
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=tv-and-music
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Adult
+          id: adult
+          links:
+            self: https://api.up.com.au/api/v1/categories/adult
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=adult
+            parent:
+              data:
+                id: good-life
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/good-life
+          type: categories
+        - attributes:
+            name: Technology
+          id: technology
+          links:
+            self: https://api.up.com.au/api/v1/categories/technology
+          relationships:
+            children:
+              data: []
+              links:
+                related: https://api.up.com.au/api/v1/categories?filter%5Bparent%5D=technology
+            parent:
+              data:
+                id: personal
+                type: categories
+              links:
+                related: https://api.up.com.au/api/v1/categories/personal
+          type: categories
+    headers:
+      Alt-Svc:
+      - clear
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept, Origin
+      Via:
+      - 1.1 google
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+    url: https://api.up.com.au/api/v1/categories
+version: 1

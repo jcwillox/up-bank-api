@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: null
+    headers: {}
+    method: GET
+    uri: https://api.up.com.au/api/v1/accounts?page%5Bsize%5D=1
+  response:
+    body:
+      yaml:
+        data:
+        - attributes:
+            accountType: TRANSACTIONAL
+            balance:
+              currencyCode: AUD
+              value: '1234.56'
+              valueInBaseUnits: 123456
+            createdAt: '1970-01-01T00:00:00+00:00'
+            displayName: Spending
+            ownershipType: INDIVIDUAL
+          id: 6e0361ab-2b54-57cb-abf4-fcb638040566
+          links:
+            self: https://api.up.com.au/api/v1/accounts/6e0361ab-2b54-57cb-abf4-fcb638040566
+          relationships:
+            transactions:
+              links:
+                related: https://api.up.com.au/api/v1/accounts/6e0361ab-2b54-57cb-abf4-fcb638040566/transactions
+          type: accounts
+        links:
+          next: https://api.up.com.au/api/v1/accounts?page%5Bafter%5D=WyIyMDIyLTAzLTIxVDIzOjEyOjA1LjUyMzg1MjAwMFoiLCI3YjMxMjFmOS00MGYzLTQyMzAtYmRkNy02NzA5ZTY4NDI2ZmIiXQ%3D%3D&page%5Bsize%5D=1
+          prev: null
+    headers:
+      Alt-Svc:
+      - clear
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept, Origin
+      Via:
+      - 1.1 google
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+    url: https://api.up.com.au/api/v1/accounts?page%5Bsize%5D=1
+version: 1

@@ -1,0 +1,65 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.up.com.au/api/v1/tags?page%5Bsize%5D=20
+  response:
+    body:
+      yaml:
+        data:
+        - id: Holiday
+          relationships:
+            transactions:
+              links:
+                related: https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Holiday
+          type: tags
+        - id: Pizza Night
+          relationships:
+            transactions:
+              links:
+                related: https://api.up.com.au/api/v1/transactions?filter%5Btag%5D=Pizza+Night
+          type: tags
+        links:
+          next: https://api.up.com.au/api/v1/tags?page%5Bafter%5D=WyJQaXp6YSBOaWdodCJd&page%5Bsize%5D=2
+          prev: null
+    headers:
+      Alt-Svc:
+      - clear
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept, Origin
+      Via:
+      - 1.1 google
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+    url: https://api.up.com.au/api/v1/tags?page%5Bsize%5D=20
+version: 1

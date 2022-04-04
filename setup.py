@@ -13,7 +13,9 @@ DOCS_REQUIRE = [
 
 TESTS_REQUIRE = [
     "pytest>=7,<8",
-    "requests_mock>=1.8.0,<2",
+    "pytest-asyncio>=0.18.3",
+    "pytest-recording>=0.12.0",
+    "PyYAML",
 ]
 
 ASYNC_REQUIRE = [
