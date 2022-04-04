@@ -9,6 +9,9 @@ runs:
   steps:
     - id: metadata
       shell: bash
+      env:
+        DESCRIPTION: ${{ github.event.repository.description }}
       run: |
         echo ::set-output name=python::$(cat setup.cfg | grep -oE 'python_requires = .+?([0-9.]+)' | cut -d "=" -f 3)
-        echo "description = ${{ github.event.repository.description }}" >> setup.cfg
+        echo "include package-data.json" > MANIFEST.in
+        echo $(jq --arg value "$DESCRIPTION" '.description=$value' <<< {}) > package-data.json

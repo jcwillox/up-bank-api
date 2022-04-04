@@ -1,3 +1,6 @@
+import json
+import os
+
 from setuptools import setup
 
 REQUIRES = [
@@ -26,6 +29,12 @@ EXTRAS_REQUIRE = {
     "async": ASYNC_REQUIRE,
 }
 
+if os.path.exists("package-data.json"):
+    with open("package-data.json") as file:
+        data = json.loads(file.read())
+else:
+    data = {}
+
 # we still specify requirements in here so PyCharm will pick them up.
 if __name__ == "__main__":
-    setup(install_requires=REQUIRES, extras_require=EXTRAS_REQUIRE)
+    setup(install_requires=REQUIRES, extras_require=EXTRAS_REQUIRE, **data)
