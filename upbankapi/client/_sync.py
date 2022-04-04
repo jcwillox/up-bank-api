@@ -22,7 +22,7 @@ from ..models.pagination import PaginatedList
 
 
 class Client(ClientBase):
-    """Client"""
+    """Synchronous client for interacting with Up's API"""
 
     webhook: "WebhookAdapter"
 

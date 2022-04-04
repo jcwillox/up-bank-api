@@ -29,7 +29,7 @@ except ImportError:
 
 
 class AsyncClient(ClientBase):
-    """AsyncClient"""
+    """Asynchronous client for interacting with Up's API"""
 
     webhook: "AsyncWebhookAdapter"
 
