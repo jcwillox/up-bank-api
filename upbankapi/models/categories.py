@@ -1,6 +1,13 @@
-from typing import Optional, Dict, List
+from datetime import datetime
+from typing import Optional, Dict, List, Union, TYPE_CHECKING
 
 from .common import ModelBase
+from .pagination import PaginatedList, AsyncPaginatedList
+from ..const import DEFAULT_PAGE_SIZE
+
+if TYPE_CHECKING:
+    from .accounts import Account
+    from .transactions import TransactionStatus, AsyncTransaction, Transaction
 
 
 class Tag(ModelBase):
@@ -9,8 +16,80 @@ class Tag(ModelBase):
     id: str
     """The label of the tag, which also acts as the tags unique identifier."""
 
+    def transactions(
+        self,
+        account: Union[str, "Account"] = None,
+        *,
+        status: "TransactionStatus" = None,
+        since: datetime = None,
+        until: datetime = None,
+        category: Union[str, "PartialCategory"] = None,
+        limit: Optional[int] = None,
+        page_size: int = DEFAULT_PAGE_SIZE,
+    ) -> PaginatedList["Transaction"]:
+        """Returns transactions for a specific account or all accounts.
+
+        Arguments:
+            account: An account/id to fetch transactions from.
+                     If `None`, returns transactions across all accounts.
+            status: The transaction status for which to return records.
+            since: The start `datetime` from which to return records.
+            until: The end `datetime` up to which to return records.
+            category: The category/id identifier for which to filter transactions.
+                      Raises exception for invalid category.
+            limit: The maximum number of records to return.
+            page_size: The number of records to return in each page. (max appears to be 100)
+        """
+        return self._client.transactions(
+            account,
+            status=status,
+            since=since,
+            until=until,
+            category=category,
+            tag=self,
+            limit=limit,
+            page_size=page_size,
+        )
+
     def __repr__(self):
         return f"<Tag id='{self.id}'>"
+
+
+class AsyncTag(Tag):
+    async def transactions(
+        self,
+        account: Union[str, "Account"] = None,
+        *,
+        status: "TransactionStatus" = None,
+        since: datetime = None,
+        until: datetime = None,
+        category: Union[str, "PartialCategory"] = None,
+        limit: Optional[int] = None,
+        page_size: int = DEFAULT_PAGE_SIZE,
+    ) -> AsyncPaginatedList["AsyncTransaction"]:
+        """Returns transactions for a specific account or all accounts.
+
+        Arguments:
+            account: An account/id to fetch transactions from.
+                     If `None`, returns transactions across all accounts.
+            status: The transaction status for which to return records.
+            since: The start `datetime` from which to return records.
+            until: The end `datetime` up to which to return records.
+            category: The category/id identifier for which to filter transactions.
+                      Raises exception for invalid category.
+            limit: The maximum number of records to return.
+            page_size: The number of records to return in each page. (max appears to be 100)
+        """
+        return await self._client.transactions(
+            account,
+            status=status,
+            since=since,
+            until=until,
+            category=category,
+            tag=self,
+            limit=limit,
+            page_size=page_size,
+        )
 
 
 class PartialCategory(ModelBase):
@@ -22,8 +101,92 @@ class PartialCategory(ModelBase):
     This is a human-readable but URL-safe value.
     """
 
+    def category(self) -> "Category":
+        """Returns the full category information for a partial category."""
+        if isinstance(self, Category):
+            return self
+        return self._client.category(self.id)
+
+    def transactions(
+        self,
+        account: Union[str, "Account"] = None,
+        *,
+        status: "TransactionStatus" = None,
+        since: datetime = None,
+        until: datetime = None,
+        tag: Union[str, Tag] = None,
+        limit: Optional[int] = None,
+        page_size: int = DEFAULT_PAGE_SIZE,
+    ) -> PaginatedList["Transaction"]:
+        """Returns transactions for a specific account or all accounts.
+
+        Arguments:
+            account: An account/id to fetch transactions from.
+                     If `None`, returns transactions across all accounts.
+            status: The transaction status for which to return records.
+            since: The start `datetime` from which to return records.
+            until: The end `datetime` up to which to return records.
+            tag: A transaction tag/id to filter for which to return records.
+                 Returns empty if tag does not exist.
+            limit: The maximum number of records to return.
+            page_size: The number of records to return in each page. (max appears to be 100)
+        """
+        return self._client.transactions(
+            account,
+            status=status,
+            since=since,
+            until=until,
+            category=self,
+            tag=tag,
+            limit=limit,
+            page_size=page_size,
+        )
+
     def __repr__(self):
         return f"<PartialCategory id='{self.id}'>"
+
+
+class AsyncPartialCategory(PartialCategory):
+    async def category(self) -> "Category":
+        """Returns the full category information for a partial category."""
+        if isinstance(self, Category):
+            return self
+        return await self._client.category(self.id)
+
+    async def transactions(
+        self,
+        account: Union[str, "Account"] = None,
+        *,
+        status: "TransactionStatus" = None,
+        since: datetime = None,
+        until: datetime = None,
+        tag: Union[str, Tag] = None,
+        limit: Optional[int] = None,
+        page_size: int = DEFAULT_PAGE_SIZE,
+    ) -> AsyncPaginatedList["AsyncTransaction"]:
+        """Returns transactions for a specific account or all accounts.
+
+        Arguments:
+            account: An account/id to fetch transactions from.
+                     If `None`, returns transactions across all accounts.
+            status: The transaction status for which to return records.
+            since: The start `datetime` from which to return records.
+            until: The end `datetime` up to which to return records.
+            tag: A transaction tag/id to filter for which to return records.
+                 Returns empty if tag does not exist.
+            limit: The maximum number of records to return.
+            page_size: The number of records to return in each page. (max appears to be 100)
+        """
+        return await self._client.transactions(
+            account,
+            status=status,
+            since=since,
+            until=until,
+            category=self,
+            tag=tag,
+            limit=limit,
+            page_size=page_size,
+        )
 
 
 class PartialCategoryParent(PartialCategory):
@@ -43,6 +206,10 @@ class PartialCategoryParent(PartialCategory):
         if self.parent:
             return f"<PartialCategoryParent id='{self.id}' parent='{self.parent.id}'>"
         return f"<PartialCategoryParent id='{self.id}'>"
+
+
+class AsyncPartialCategoryParent(PartialCategoryParent, AsyncPartialCategory):
+    parent: Optional[AsyncPartialCategory] = None
 
 
 class Category(PartialCategoryParent):
@@ -65,3 +232,7 @@ class Category(PartialCategoryParent):
         if self.parent:
             return f"<Category '{self.name}': id='{self.id}' parent='{self.parent.id}'>"
         return f"<Category '{self.name}': id='{self.id}'>"
+
+
+class AsyncCategory(Category, AsyncPartialCategory):
+    children: List[AsyncPartialCategory]

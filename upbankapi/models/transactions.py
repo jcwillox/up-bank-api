@@ -2,7 +2,13 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, Optional, List, Union
 
-from .categories import Tag, PartialCategoryParent, PartialCategory
+from .categories import (
+    Tag,
+    PartialCategoryParent,
+    PartialCategory,
+    AsyncTag,
+    AsyncPartialCategoryParent,
+)
 from .common import ModelBase, MoneyObject
 
 
@@ -254,6 +260,9 @@ class Transaction(ModelBase):
 
 
 class AsyncTransaction(Transaction):
+    category: Optional[AsyncPartialCategoryParent] = None
+    tags: List[AsyncTag]
+
     async def categorize(self, category: Optional[Union[str, PartialCategory]]) -> bool:
         """Assign a category to a transaction.
 

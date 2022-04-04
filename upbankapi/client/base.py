@@ -22,7 +22,10 @@ from ..models import (
     WebhookLog,
     Category,
 )
+from ..models.accounts import AsyncAccount
+from ..models.categories import AsyncTag, AsyncCategory
 from ..models.pagination import PaginatedList, AsyncPaginatedList
+from ..models.transactions import AsyncTransaction
 from ..utils import Filters
 
 
@@ -66,7 +69,9 @@ class ClientBase(ABC):
 
     ### ACCOUNTS ###
     @abstractmethod
-    def account(self, account_id: str) -> Union[Account, Coroutine[Any, Any, Account]]:
+    def account(
+        self, account_id: str
+    ) -> Union[Account, Coroutine[Any, Any, AsyncAccount]]:
         ...
 
     def _handle_account(self, account_id: str):
@@ -81,7 +86,7 @@ class ClientBase(ABC):
         limit: Optional[int] = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> Union[
-        PaginatedList[Account], Coroutine[Any, Any, AsyncPaginatedList[Account]]
+        PaginatedList[Account], Coroutine[Any, Any, AsyncPaginatedList[AsyncAccount]]
     ]:
         ...
 
@@ -108,7 +113,7 @@ class ClientBase(ABC):
     @abstractmethod
     def category(
         self, category_id: str
-    ) -> Union[Category, Coroutine[Any, Any, Category]]:
+    ) -> Union[Category, Coroutine[Any, Any, AsyncCategory]]:
         ...
 
     def _handle_category(self, category_id: str):
@@ -117,7 +122,7 @@ class ClientBase(ABC):
     @abstractmethod
     def categories(
         self, parent: Union[str, PartialCategory]
-    ) -> Union[List[Category], Coroutine[Any, Any, Category]]:
+    ) -> Union[List[Category], Coroutine[Any, Any, List[AsyncCategory]]]:
         ...
 
     def _handle_categories(self, parent: Union[str, PartialCategory]):
@@ -164,7 +169,7 @@ class ClientBase(ABC):
     @abstractmethod
     def tags(
         self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
-    ) -> Union[PaginatedList[Tag], Coroutine[Any, Any, AsyncPaginatedList[Tag]]]:
+    ) -> Union[PaginatedList[Tag], Coroutine[Any, Any, AsyncPaginatedList[AsyncTag]]]:
         ...
 
     def _handle_tags(
@@ -216,7 +221,7 @@ class ClientBase(ABC):
     @abstractmethod
     def transaction(
         self, transaction_id: str
-    ) -> Union[Transaction, Coroutine[Any, Any, Transaction]]:
+    ) -> Union[Transaction, Coroutine[Any, Any, AsyncTransaction]]:
         ...
 
     def _handle_transaction(self, transaction_id: str):
@@ -235,7 +240,8 @@ class ClientBase(ABC):
         limit: Optional[int] = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> Union[
-        PaginatedList[Transaction], Coroutine[Any, Any, AsyncPaginatedList[Transaction]]
+        PaginatedList[Transaction],
+        Coroutine[Any, Any, AsyncPaginatedList[AsyncTransaction]],
     ]:
         ...
 

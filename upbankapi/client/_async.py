@@ -14,9 +14,9 @@ from ..models import (
     Webhook,
     WebhookEvent,
     WebhookLog,
-    Category,
 )
 from ..models.accounts import AsyncAccount
+from ..models.categories import AsyncTag, AsyncCategory
 from ..models.pagination import AsyncPaginatedList
 from ..models.transactions import AsyncTransaction
 
@@ -97,17 +97,17 @@ class AsyncClient(ClientBase):
             limit,
         )
 
-    async def category(self, category_id: str) -> Category:
+    async def category(self, category_id: str) -> AsyncCategory:
         """Returns a category by its unique category id.
 
         Arguments:
             category_id: The unique identifier for a category.
         """
-        return Category(self, await self._handle_category(category_id))
+        return AsyncCategory(self, await self._handle_category(category_id))
 
     async def categories(
         self, parent: Union[str, PartialCategory] = None
-    ) -> List[Category]:
+    ) -> List[AsyncCategory]:
         """Returns a list of categories.
 
         Arguments:
@@ -115,7 +115,8 @@ class AsyncClient(ClientBase):
                     Raises exception for invalid category.
         """
         return [
-            Category(self, x) for x in (await self._handle_categories(parent))["data"]
+            AsyncCategory(self, x)
+            for x in (await self._handle_categories(parent))["data"]
         ]
 
     async def categorize(
@@ -136,7 +137,7 @@ class AsyncClient(ClientBase):
 
     async def tags(
         self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
-    ) -> AsyncPaginatedList[Tag]:
+    ) -> AsyncPaginatedList[AsyncTag]:
         """Returns a list of the users tags.
 
         Arguments:
@@ -145,7 +146,7 @@ class AsyncClient(ClientBase):
         """
         return AsyncPaginatedList(
             self,
-            Tag,
+            AsyncTag,
             await self._handle_tags(limit, page_size),
             limit,
         )
