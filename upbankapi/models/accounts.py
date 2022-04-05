@@ -66,10 +66,10 @@ class Account(ModelBase):
         until: datetime = None,
         category: Union[str, PartialCategory] = None,
         tag: Union[str, Tag] = None,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> PaginatedList[Transaction]:
-        """Returns transactions for this account.
+        """Retrieves transactions for this account.
 
         Arguments:
             status: The transaction status for which to return records.
@@ -81,6 +81,9 @@ class Account(ModelBase):
                  Returns empty if tag does not exist.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the transactions.
         """
         return self._client.transactions(
             account=self,
@@ -109,7 +112,7 @@ class AsyncAccount(Account):
         until: datetime = None,
         category: Union[str, PartialCategory] = None,
         tag: Union[str, Tag] = None,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> AsyncPaginatedList[Transaction]:
         return await self._client.transactions(

@@ -29,6 +29,8 @@ class Client(ClientBase):
     def __init__(self, token: str = None, session: requests.Session = None):
         super().__init__(token)
         self.webhook = WebhookAdapter(self)
+        """Property for accessing webhook methods."""
+
         if session:
             self._session = session
         else:
@@ -48,14 +50,24 @@ class Client(ClientBase):
         return self._handle_response(response.json(), response.status_code)
 
     def ping(self) -> str:
-        """Returns the users unique id and will raise an exception if the token is not valid."""
+        """Retrieves the users unique id and checks if the token in valid.
+
+        Returns:
+            The users unique id.
+
+        Raises:
+            NotAuthorizedException: If the token is invalid.
+        """
         return self._handle_ping()["meta"]["id"]
 
     def account(self, account_id: str) -> Account:
-        """Returns a single account by its unique account id.
+        """Retrieve a single account by its unique account id.
 
         Arguments:
             account_id: The unique identifier for an account.
+
+        Returns:
+            The specified account.
         """
         return Account(self, self._handle_account(account_id))
 
@@ -64,16 +76,19 @@ class Client(ClientBase):
         type: Optional[AccountType] = None,
         ownership_type: Optional[OwnershipType] = None,
         *,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> PaginatedList[Account]:
-        """Returns a list of the users accounts.
+        """Retrieves a list of the users accounts.
 
         Arguments:
             type: The type of account for which to return records.
             ownership_type: The account ownership structure for which to return records.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the accounts.
         """
         return PaginatedList(
             self,
@@ -83,19 +98,25 @@ class Client(ClientBase):
         )
 
     def category(self, category_id: str) -> Category:
-        """Returns a category by its unique category id.
+        """Retrieve a category by its unique category id.
 
         Arguments:
             category_id: The unique identifier for a category.
+
+        Returns:
+            The specified category.
         """
         return Category(self, self._handle_category(category_id))
 
     def categories(self, parent: Union[str, PartialCategory] = None) -> List[Category]:
-        """Returns a list of categories.
+        """Retrieves a list of categories.
 
         Arguments:
             parent: The parent category/id to filter categories by.
                     Raises exception for invalid category.
+
+        Returns:
+            A list of the categories.
         """
         return [Category(self, x) for x in self._handle_categories(parent)["data"]]
 
@@ -112,17 +133,26 @@ class Client(ClientBase):
                          a `ValueError` will be raised.
             category: The category to assign to the transaction.
                       Setting this to `None` will de-categorize the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
+
+        Raises:
+            ValueError: If the transaction is not `categorizable`.
         """
         return self._handle_categorize(transaction, category)
 
     def tags(
-        self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
+        self, *, limit: int = None, page_size: int = DEFAULT_PAGE_SIZE
     ) -> PaginatedList[Tag]:
-        """Returns a list of the users tags.
+        """Retrieves a list of the users tags.
 
         Arguments:
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the tags.
         """
         return PaginatedList(
             self,
@@ -137,6 +167,9 @@ class Client(ClientBase):
         Arguments:
             transaction: The transaction/id to add tags on.
             *tags: The tags or tag ids to add to the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return self._handle_add_tags(transaction, *tags)
 
@@ -148,14 +181,20 @@ class Client(ClientBase):
         Arguments:
             transaction: The transaction/id to remove tags on.
             *tags: The tags or tag ids to remove to the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return self._handle_remove_tags(transaction, *tags)
 
     def transaction(self, transaction_id: str) -> Transaction:
-        """Returns a single transaction by its unique id.
+        """Retrieve a single transaction by its unique id.
 
         Arguments:
             transaction_id: The unique identifier for a transaction.
+
+        Returns:
+            The specified transaction.
         """
         return Transaction(self, self._handle_transaction(transaction_id))
 
@@ -168,10 +207,10 @@ class Client(ClientBase):
         until: datetime = None,
         category: Union[str, PartialCategory] = None,
         tag: Union[str, Tag] = None,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> PaginatedList[Transaction]:
-        """Returns transactions for a specific account or all accounts.
+        """Retrieves transactions for a specific account or all accounts.
 
         Arguments:
             account: An account/id to fetch transactions from.
@@ -185,6 +224,9 @@ class Client(ClientBase):
                  Returns empty if tag does not exist.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the transactions.
         """
         return PaginatedList(
             self,
@@ -196,13 +238,16 @@ class Client(ClientBase):
         )
 
     def webhooks(
-        self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
+        self, *, limit: int = None, page_size: int = DEFAULT_PAGE_SIZE
     ) -> PaginatedList[Webhook]:
-        """Returns a list of the users webhooks.
+        """Retrieves a list of the users webhooks.
 
         Arguments:
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the webhooks.
         """
         return PaginatedList(
             self,
@@ -219,18 +264,24 @@ class WebhookAdapter(WebhookAdapterBase):
         self._client = client
 
     def __call__(self, webhook_id: str) -> Webhook:
-        """Returns a single webhook by its unique id.
+        """Retrieve a single webhook by its unique id.
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
+
+        Returns:
+            The specified webhook.
         """
         return self.get(webhook_id)
 
     def get(self, webhook_id: str) -> Webhook:
-        """Returns a single webhook by its unique id.
+        """Retrieve a single webhook by its unique id.
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
+
+        Returns:
+            The specified webhook.
         """
         return Webhook(self._client, self._handle_get(webhook_id))
 
@@ -240,6 +291,9 @@ class WebhookAdapter(WebhookAdapterBase):
         Arguments:
             url: The URL that this webhook should post events to.
             description: An optional description for this webhook, up to 64 characters in length.
+
+        Returns:
+            The newly created webhook.
         """
         return Webhook(self._client, self._handle_create(url, description))
 
@@ -248,6 +302,9 @@ class WebhookAdapter(WebhookAdapterBase):
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
+
+        Returns:
+            The ping event response.
         """
         return WebhookEvent(self._client, self._handle_ping(webhook_id))
 
@@ -255,15 +312,18 @@ class WebhookAdapter(WebhookAdapterBase):
         self,
         webhook_id: str,
         *,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> PaginatedList[WebhookLog]:
-        """Returns the logs from a webhook by id.
+        """Retrieves the logs from a webhook by id.
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the webhook logs.
         """
         return PaginatedList(
             self._client,
@@ -277,5 +337,8 @@ class WebhookAdapter(WebhookAdapterBase):
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return self._handle_delete(webhook_id)

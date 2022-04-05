@@ -230,27 +230,39 @@ class Transaction(ModelBase):
         return self.description
 
     def categorize(self, category: Optional[Union[str, PartialCategory]]) -> bool:
-        """Assign a category to a transaction.
+        """Assign a category to this transaction.
 
         Arguments:
             category: The category to assign to the transaction.
                       Setting this to `None` will de-categorize the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
+
+        Raises:
+            ValueError: If the transaction is not `categorizable`.
         """
         return self._client.categorize(self, category=None)
 
     def add_tags(self, *tags: Tag) -> bool:
-        """Add tags to a given transaction.
+        """Add tags to this transaction.
 
         Arguments:
             *tags: The tags or tag ids to add to the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return self._client.add_tags(self, *tags)
 
     def remove_tags(self, *tags: Union[str, Tag]) -> bool:
-        """Remove tags from a given transaction.
+        """Remove tags from this transaction.
 
         Arguments:
             *tags: The tags or tag ids to remove to the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return self._client.remove_tags(self, *tags)
 
@@ -264,26 +276,38 @@ class AsyncTransaction(Transaction):
     tags: List[AsyncTag]
 
     async def categorize(self, category: Optional[Union[str, PartialCategory]]) -> bool:
-        """Assign a category to a transaction.
+        """Assign a category to this transaction.
 
         Arguments:
             category: The category to assign to the transaction.
                       Setting this to `None` will de-categorize the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
+
+        Raises:
+            ValueError: If the transaction is not `categorizable`.
         """
         return await self._client.categorize(self, category=None)
 
     async def add_tags(self, *tags: Tag) -> bool:
-        """Add tags to a given transaction.
+        """Add tags to this transaction.
 
         Arguments:
             *tags: The tags or tag ids to add to the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return await self._client.add_tags(self, *tags)
 
     async def remove_tags(self, *tags: Union[str, Tag]) -> bool:
-        """Remove tags from a given transaction.
+        """Remove tags from this transaction.
 
         Arguments:
             *tags: The tags or tag ids to remove to the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return await self._client.remove_tags(self, *tags)

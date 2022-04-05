@@ -52,7 +52,11 @@ class Webhook(ModelBase):
         self.created_at = datetime.fromisoformat(attrs["createdAt"])
 
     def ping(self) -> WebhookEvent:
-        """Sends a ping event to the webhook"""
+        """Sends a ping event to the webhook
+
+        Returns:
+            The ping event response.
+        """
         return self._client.webhook.ping(self.id)
 
     def logs(
@@ -61,16 +65,23 @@ class Webhook(ModelBase):
         limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> PaginatedList[WebhookLog]:
-        """Returns the logs of this webhook.
+        """Retrieves the logs for this webhook.
 
         Arguments:
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the webhook logs.
         """
         return self._client.webhook.logs(self.id, limit=limit, page_size=page_size)
 
     def delete(self) -> bool:
-        """Deletes the webhook."""
+        """Deletes this webhook.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
+        """
         return self._client.webhook.delete(self.id)
 
     def __repr__(self) -> str:
@@ -82,7 +93,11 @@ class Webhook(ModelBase):
 
 class AsyncWebhook(Webhook):
     async def ping(self) -> AsyncWebhookEvent:
-        """Sends a ping event to the webhook"""
+        """Sends a ping event to the webhook
+
+        Returns:
+            The ping event response.
+        """
         return await self._client.webhook.ping(self.id)
 
     async def logs(
@@ -91,18 +106,25 @@ class AsyncWebhook(Webhook):
         limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> AsyncPaginatedList[WebhookLog]:
-        """Returns the logs of this webhook.
+        """Retrieves the logs for this webhook.
 
         Arguments:
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the webhook logs.
         """
         return await self._client.webhook.logs(
             self.id, limit=limit, page_size=page_size
         )
 
     async def delete(self) -> bool:
-        """Deletes the webhook."""
+        """Deletes this webhook.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
+        """
         return await self._client.webhook.delete(self.id)
 
 
@@ -189,11 +211,19 @@ class WebhookEvent(ModelBase):
             self.transaction_id = relations["transaction"]["data"]["id"]
 
     def webhook(self) -> Webhook:
-        """Fetch the details of the associated webhook."""
+        """Fetch the details of the associated webhook.
+
+        Returns:
+            The associated webhook.
+        """
         return self._client.webhook.get(self.webhook_id)
 
     def transaction(self) -> Transaction:
-        """Fetch the details of the associated transaction."""
+        """Fetch the details of the associated transaction.
+
+        Returns:
+            The associated transaction.
+        """
         if self.transaction_id:
             return self._client.transaction(self.transaction_id)
 
@@ -206,10 +236,18 @@ class WebhookEvent(ModelBase):
 
 class AsyncWebhookEvent(WebhookEvent):
     async def webhook(self) -> AsyncWebhook:
-        """Fetch the details of the associated webhook."""
+        """Fetch the details of the associated webhook.
+
+        Returns:
+            The associated webhook.
+        """
         return await self._client.webhook.get(self.webhook_id)
 
     async def transaction(self) -> AsyncTransaction:
-        """Fetch the details of the associated transaction."""
+        """Fetch the details of the associated transaction.
+
+        Returns:
+            The associated transaction.
+        """
         if self.transaction_id:
             return await self._client.transaction(self.transaction_id)

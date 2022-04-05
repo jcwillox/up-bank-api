@@ -11,14 +11,12 @@ from ..models import (
     TransactionStatus,
     PartialCategory,
     Tag,
-    Webhook,
-    WebhookEvent,
-    WebhookLog,
 )
 from ..models.accounts import AsyncAccount
 from ..models.categories import AsyncTag, AsyncCategory
 from ..models.pagination import AsyncPaginatedList
 from ..models.transactions import AsyncTransaction
+from ..models.webhooks import AsyncWebhook, AsyncWebhookEvent, AsyncWebhookLog
 
 try:
     import aiohttp
@@ -36,6 +34,8 @@ class AsyncClient(ClientBase):
     def __init__(self, token: str = None, session: aiohttp.ClientSession = None):
         super().__init__(token)
         self.webhook = AsyncWebhookAdapter(self)
+        """Property for accessing webhook methods."""
+
         if session:
             self._session = session
         else:
@@ -61,14 +61,24 @@ class AsyncClient(ClientBase):
             return self._handle_response(await response.json(), response.status)
 
     async def ping(self) -> str:
-        """Returns the users unique id and will raise an exception if the token is not valid."""
+        """Retrieves the users unique id and checks if the token in valid.
+
+        Returns:
+            The users unique id.
+
+        Raises:
+            NotAuthorizedException: If the token is invalid.
+        """
         return (await self._handle_ping())["meta"]["id"]
 
     async def account(self, account_id: str) -> AsyncAccount:
-        """Returns a single account by its unique account id.
+        """Retrieve a single account by its unique account id.
 
         Arguments:
             account_id: The unique identifier for an account.
+
+        Returns:
+            The specified account.
         """
         return AsyncAccount(self, await self._handle_account(account_id))
 
@@ -77,16 +87,19 @@ class AsyncClient(ClientBase):
         type: Optional[AccountType] = None,
         ownership_type: Optional[OwnershipType] = None,
         *,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> AsyncPaginatedList[AsyncAccount]:
-        """Returns a list of the users accounts.
+        """Retrieves a list of the users accounts.
 
         Arguments:
             type: The type of account for which to return records.
             ownership_type: The account ownership structure for which to return records.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the accounts.
         """
         return AsyncPaginatedList(
             self,
@@ -98,21 +111,27 @@ class AsyncClient(ClientBase):
         )
 
     async def category(self, category_id: str) -> AsyncCategory:
-        """Returns a category by its unique category id.
+        """Retrieve a category by its unique category id.
 
         Arguments:
             category_id: The unique identifier for a category.
+
+        Returns:
+            The specified category.
         """
         return AsyncCategory(self, await self._handle_category(category_id))
 
     async def categories(
         self, parent: Union[str, PartialCategory] = None
     ) -> List[AsyncCategory]:
-        """Returns a list of categories.
+        """Retrieves a list of categories.
 
         Arguments:
             parent: The parent category/id to filter categories by.
                     Raises exception for invalid category.
+
+        Returns:
+            A list of the categories.
         """
         return [
             AsyncCategory(self, x)
@@ -132,17 +151,26 @@ class AsyncClient(ClientBase):
                          a `ValueError` will be raised.
             category: The category to assign to the transaction.
                       Setting this to `None` will de-categorize the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
+
+        Raises:
+            ValueError: If the transaction is not `categorizable`.
         """
         return await self._handle_categorize(transaction, category)
 
     async def tags(
-        self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
+        self, *, limit: int = None, page_size: int = DEFAULT_PAGE_SIZE
     ) -> AsyncPaginatedList[AsyncTag]:
-        """Returns a list of the users tags.
+        """Retrieves a list of the users tags.
 
         Arguments:
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the tags.
         """
         return AsyncPaginatedList(
             self,
@@ -157,6 +185,9 @@ class AsyncClient(ClientBase):
         Arguments:
             transaction: The transaction/id to add tags on.
             *tags: The tags or tag ids to add to the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return await self._handle_add_tags(transaction, *tags)
 
@@ -168,14 +199,20 @@ class AsyncClient(ClientBase):
         Arguments:
             transaction: The transaction/id to remove tags on.
             *tags: The tags or tag ids to remove to the transaction.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return await self._handle_remove_tags(transaction, *tags)
 
     async def transaction(self, transaction_id: str) -> AsyncTransaction:
-        """Returns a single transaction by its unique id.
+        """Retrieve a single transaction by its unique id.
 
         Arguments:
             transaction_id: The unique identifier for a transaction.
+
+        Returns:
+            The specified transaction.
         """
         return AsyncTransaction(self, await self._handle_transaction(transaction_id))
 
@@ -188,10 +225,10 @@ class AsyncClient(ClientBase):
         until: datetime = None,
         category: Union[str, PartialCategory] = None,
         tag: Union[str, Tag] = None,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> AsyncPaginatedList[AsyncTransaction]:
-        """Returns transactions for a specific account or all accounts.
+        """Retrieves transactions for a specific account or all accounts.
 
         Arguments:
             account: An account/id to fetch transactions from.
@@ -205,6 +242,9 @@ class AsyncClient(ClientBase):
                  Returns empty if tag does not exist.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the transactions.
         """
         return AsyncPaginatedList(
             self,
@@ -216,17 +256,20 @@ class AsyncClient(ClientBase):
         )
 
     async def webhooks(
-        self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
-    ) -> AsyncPaginatedList[Webhook]:
-        """Returns a list of the users webhooks.
+        self, *, limit: int = None, page_size: int = DEFAULT_PAGE_SIZE
+    ) -> AsyncPaginatedList[AsyncWebhook]:
+        """Retrieves a list of the users webhooks.
 
         Arguments:
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the webhooks.
         """
         return AsyncPaginatedList(
             self,
-            Webhook,
+            AsyncWebhook,
             await self._handle_webhooks(limit, page_size),
             limit,
         )
@@ -238,56 +281,71 @@ class AsyncWebhookAdapter(WebhookAdapterBase):
     def __init__(self, client: AsyncClient):
         self._client = client
 
-    def __call__(self, webhook_id: str) -> Coroutine[Any, Any, Webhook]:
-        """Returns a single webhook by its unique id.
+    def __call__(self, webhook_id: str) -> Coroutine[Any, Any, AsyncWebhook]:
+        """Retrieve a single webhook by its unique id.
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
+
+        Returns:
+            The specified webhook.
         """
         return self.get(webhook_id)
 
-    async def get(self, webhook_id: str) -> Webhook:
-        """Returns a single webhook by its unique id.
+    async def get(self, webhook_id: str) -> AsyncWebhook:
+        """Retrieve a single webhook by its unique id.
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
-        """
-        return Webhook(self._client, await self._handle_get(webhook_id))
 
-    async def create(self, url: str, description: str = None) -> Webhook:
+        Returns:
+            The specified webhook.
+        """
+        return AsyncWebhook(self._client, await self._handle_get(webhook_id))
+
+    async def create(self, url: str, description: str = None) -> AsyncWebhook:
         """Registers and returns a new webhook.
 
         Arguments:
             url: The URL that this webhook should post events to.
             description: An optional description for this webhook, up to 64 characters in length.
-        """
-        return Webhook(self._client, await self._handle_create(url, description))
 
-    async def ping(self, webhook_id: str) -> WebhookEvent:
+        Returns:
+            The newly created webhook.
+        """
+        return AsyncWebhook(self._client, await self._handle_create(url, description))
+
+    async def ping(self, webhook_id: str) -> AsyncWebhookEvent:
         """Pings a webhook by its unique id.
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
+
+        Returns:
+            The ping event response.
         """
-        return WebhookEvent(self._client, await self._handle_ping(webhook_id))
+        return AsyncWebhookEvent(self._client, await self._handle_ping(webhook_id))
 
     async def logs(
         self,
         webhook_id: str,
         *,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ) -> AsyncPaginatedList[WebhookLog]:
-        """Returns the logs from a webhook by id.
+    ) -> AsyncPaginatedList[AsyncWebhookLog]:
+        """Retrieves the logs from a webhook by id.
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the webhook logs.
         """
         return AsyncPaginatedList(
             self._client,
-            WebhookLog,
+            AsyncWebhookLog,
             await self._handle_logs(webhook_id, limit, page_size),
             limit,
         )
@@ -297,5 +355,8 @@ class AsyncWebhookAdapter(WebhookAdapterBase):
 
         Arguments:
             webhook_id: The unique identifier for a webhook.
+
+        Returns:
+            `True` if successful, otherwise raises exception.
         """
         return await self._handle_delete(webhook_id)

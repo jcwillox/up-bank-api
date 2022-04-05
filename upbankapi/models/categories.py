@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from typing import Optional, Dict, List, Union, TYPE_CHECKING
 
@@ -18,16 +20,16 @@ class Tag(ModelBase):
 
     def transactions(
         self,
-        account: Union[str, "Account"] = None,
+        account: Union[str, Account] = None,
         *,
-        status: "TransactionStatus" = None,
+        status: TransactionStatus = None,
         since: datetime = None,
         until: datetime = None,
-        category: Union[str, "PartialCategory"] = None,
-        limit: Optional[int] = None,
+        category: Union[str, PartialCategory] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ) -> PaginatedList["Transaction"]:
-        """Returns transactions for a specific account or all accounts.
+    ) -> PaginatedList[Transaction]:
+        """Retrieves transactions for a specific account or all accounts.
 
         Arguments:
             account: An account/id to fetch transactions from.
@@ -39,6 +41,9 @@ class Tag(ModelBase):
                       Raises exception for invalid category.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the transactions.
         """
         return self._client.transactions(
             account,
@@ -58,16 +63,16 @@ class Tag(ModelBase):
 class AsyncTag(Tag):
     async def transactions(
         self,
-        account: Union[str, "Account"] = None,
+        account: Union[str, Account] = None,
         *,
-        status: "TransactionStatus" = None,
+        status: TransactionStatus = None,
         since: datetime = None,
         until: datetime = None,
-        category: Union[str, "PartialCategory"] = None,
-        limit: Optional[int] = None,
+        category: Union[str, PartialCategory] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ) -> AsyncPaginatedList["AsyncTransaction"]:
-        """Returns transactions for a specific account or all accounts.
+    ) -> AsyncPaginatedList[AsyncTransaction]:
+        """Retrieves transactions for a specific account or all accounts.
 
         Arguments:
             account: An account/id to fetch transactions from.
@@ -79,6 +84,9 @@ class AsyncTag(Tag):
                       Raises exception for invalid category.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the transactions.
         """
         return await self._client.transactions(
             account,
@@ -101,7 +109,7 @@ class PartialCategory(ModelBase):
     This is a human-readable but URL-safe value.
     """
 
-    def category(self) -> "Category":
+    def category(self) -> Category:
         """Returns the full category information for a partial category."""
         if isinstance(self, Category):
             return self
@@ -109,16 +117,16 @@ class PartialCategory(ModelBase):
 
     def transactions(
         self,
-        account: Union[str, "Account"] = None,
+        account: Union[str, Account] = None,
         *,
-        status: "TransactionStatus" = None,
+        status: TransactionStatus = None,
         since: datetime = None,
         until: datetime = None,
         tag: Union[str, Tag] = None,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ) -> PaginatedList["Transaction"]:
-        """Returns transactions for a specific account or all accounts.
+    ) -> PaginatedList[Transaction]:
+        """Retrieves transactions for a specific account or all accounts.
 
         Arguments:
             account: An account/id to fetch transactions from.
@@ -130,6 +138,9 @@ class PartialCategory(ModelBase):
                  Returns empty if tag does not exist.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the transactions.
         """
         return self._client.transactions(
             account,
@@ -147,7 +158,7 @@ class PartialCategory(ModelBase):
 
 
 class AsyncPartialCategory(PartialCategory):
-    async def category(self) -> "Category":
+    async def category(self) -> Category:
         """Returns the full category information for a partial category."""
         if isinstance(self, Category):
             return self
@@ -155,16 +166,16 @@ class AsyncPartialCategory(PartialCategory):
 
     async def transactions(
         self,
-        account: Union[str, "Account"] = None,
+        account: Union[str, Account] = None,
         *,
-        status: "TransactionStatus" = None,
+        status: TransactionStatus = None,
         since: datetime = None,
         until: datetime = None,
         tag: Union[str, Tag] = None,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ) -> AsyncPaginatedList["AsyncTransaction"]:
-        """Returns transactions for a specific account or all accounts.
+    ) -> AsyncPaginatedList[AsyncTransaction]:
+        """Retrieves transactions for a specific account or all accounts.
 
         Arguments:
             account: An account/id to fetch transactions from.
@@ -176,6 +187,9 @@ class AsyncPartialCategory(PartialCategory):
                  Returns empty if tag does not exist.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
+
+        Returns:
+            A paginated list of the transactions.
         """
         return await self._client.transactions(
             account,

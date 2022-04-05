@@ -26,6 +26,7 @@ from ..models.accounts import AsyncAccount
 from ..models.categories import AsyncTag, AsyncCategory
 from ..models.pagination import PaginatedList, AsyncPaginatedList
 from ..models.transactions import AsyncTransaction
+from ..models.webhooks import AsyncWebhook, AsyncWebhookEvent, AsyncWebhookLog
 from ..utils import Filters
 
 
@@ -83,7 +84,7 @@ class ClientBase(ABC):
         type: Optional[AccountType] = None,
         ownership_type: Optional[OwnershipType] = None,
         *,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> Union[
         PaginatedList[Account], Coroutine[Any, Any, AsyncPaginatedList[AsyncAccount]]
@@ -94,7 +95,7 @@ class ClientBase(ABC):
         self,
         type: Optional[AccountType] = None,
         ownership_type: Optional[OwnershipType] = None,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ):
         return self.api(
@@ -168,13 +169,11 @@ class ClientBase(ABC):
     ### TAGS ###
     @abstractmethod
     def tags(
-        self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
+        self, *, limit: int = None, page_size: int = DEFAULT_PAGE_SIZE
     ) -> Union[PaginatedList[Tag], Coroutine[Any, Any, AsyncPaginatedList[AsyncTag]]]:
         ...
 
-    def _handle_tags(
-        self, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
-    ):
+    def _handle_tags(self, limit: int = None, page_size: int = DEFAULT_PAGE_SIZE):
         return self.api("/tags", params=Filters(page_size, limit))
 
     @abstractmethod
@@ -237,7 +236,7 @@ class ClientBase(ABC):
         until: datetime = None,
         category: Union[str, PartialCategory] = None,
         tag: Union[str, Tag] = None,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> Union[
         PaginatedList[Transaction],
@@ -253,7 +252,7 @@ class ClientBase(ABC):
         until: datetime = None,
         category: Union[str, PartialCategory] = None,
         tag: Union[str, Tag] = None,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ):
         filters = Filters(
@@ -278,15 +277,13 @@ class ClientBase(ABC):
     ### WEBHOOKS ###
     @abstractmethod
     def webhooks(
-        self, *, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
+        self, *, limit: int = None, page_size: int = DEFAULT_PAGE_SIZE
     ) -> Union[
-        PaginatedList[Webhook], Coroutine[Any, Any, AsyncPaginatedList[Webhook]]
+        PaginatedList[Webhook], Coroutine[Any, Any, AsyncPaginatedList[AsyncWebhook]]
     ]:
         ...
 
-    def _handle_webhooks(
-        self, limit: Optional[int] = None, page_size: int = DEFAULT_PAGE_SIZE
-    ):
+    def _handle_webhooks(self, limit: int = None, page_size: int = DEFAULT_PAGE_SIZE):
         return self.api("/webhooks", params=Filters(page_size, limit))
 
 
@@ -294,11 +291,13 @@ class WebhookAdapterBase(ABC):
     _client: ClientBase
 
     @abstractmethod
-    def __call__(self, webhook_id: str) -> Union[Webhook, Coroutine[Any, Any, Webhook]]:
+    def __call__(
+        self, webhook_id: str
+    ) -> Union[Webhook, Coroutine[Any, Any, AsyncWebhook]]:
         ...
 
     @abstractmethod
-    def get(self, webhook_id: str) -> Union[Webhook, Coroutine[Any, Any, Webhook]]:
+    def get(self, webhook_id: str) -> Union[Webhook, Coroutine[Any, Any, AsyncWebhook]]:
         ...
 
     def _handle_get(self, webhook_id: str):
@@ -307,7 +306,7 @@ class WebhookAdapterBase(ABC):
     @abstractmethod
     def create(
         self, url: str, description: str = None
-    ) -> Union[Webhook, Coroutine[Any, Any, Webhook]]:
+    ) -> Union[Webhook, Coroutine[Any, Any, AsyncWebhook]]:
         ...
 
     def _handle_create(self, url: str, description: str = None):
@@ -320,7 +319,7 @@ class WebhookAdapterBase(ABC):
     @abstractmethod
     def ping(
         self, webhook_id: str
-    ) -> Union[WebhookEvent, Coroutine[Any, Any, WebhookEvent]]:
+    ) -> Union[WebhookEvent, Coroutine[Any, Any, AsyncWebhookEvent]]:
         ...
 
     def _handle_ping(self, webhook_id: str):
@@ -331,17 +330,18 @@ class WebhookAdapterBase(ABC):
         self,
         webhook_id: str,
         *,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ) -> Union[
-        PaginatedList[WebhookLog], Coroutine[Any, Any, AsyncPaginatedList[WebhookLog]]
+        PaginatedList[WebhookLog],
+        Coroutine[Any, Any, AsyncPaginatedList[AsyncWebhookLog]],
     ]:
         ...
 
     def _handle_logs(
         self,
         webhook_id: str,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ):
         return self._client.api(
