@@ -5,3 +5,5 @@ dist/
 build/
 package-data.json
 MANIFEST.in
+site/
+.pytest_cache/
