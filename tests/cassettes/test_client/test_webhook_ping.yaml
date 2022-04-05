@@ -1,0 +1,64 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      Content-Length:
+      - '0'
+      User-Agent:
+      - python-requests/2.27.1
+    method: POST
+    uri: https://api.up.com.au/api/v1/webhooks/549985d6-27b1-4c8f-bfa4-8cc86de2fdb7/ping
+  response:
+    body:
+      yaml:
+        data:
+          type: webhook-events
+          id: 8fed1bbc-81e6-4b7d-8882-d835bd60ea8b
+          attributes:
+            eventType: PING
+            createdAt: "2022-03-22T10:12:35+11:00"
+          relationships:
+            webhook:
+              data:
+                type: webhooks
+                id: 549985d6-27b1-4c8f-bfa4-8cc86de2fdb7
+              links:
+                related: https://api.up.com.au/api/v1/webhooks/549985d6-27b1-4c8f-bfa4-8cc86de2fdb7
+    headers:
+      Alt-Svc:
+      - clear
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept, Origin
+      Via:
+      - 1.1 google
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 201
+      message: Created
+    url: https://api.up.com.au/api/v1/webhooks/549985d6-27b1-4c8f-bfa4-8cc86de2fdb7/ping
+version: 1

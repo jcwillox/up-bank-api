@@ -5,6 +5,7 @@ from upbankapi import Client, AsyncClient
 USER_ID = "66bac1cf-8dd0-4f77-ae9d-5a296f7402e3"
 ACCOUNT_ID = "6e0361ab-2b54-57cb-abf4-fcb638040566"
 TRANSACTION_ID = "34642cf9-7017-41b4-ac52-98f955d5fe48"
+WEBHOOK_ID = "549985d6-27b1-4c8f-bfa4-8cc86de2fdb7"
 
 
 @pytest.fixture
@@ -78,6 +79,31 @@ class TestClient:
         assert len(transactions) == 1
         assert transactions[0].id == TRANSACTION_ID
 
+    @pytest.mark.default_cassette("test_webhook.yaml")
+    @pytest.mark.vcr()
+    def test_webhook(self, client: Client):
+        webhook = client.webhook(WEBHOOK_ID)
+        assert webhook.id == WEBHOOK_ID
+
+    @pytest.mark.default_cassette("test_webhook.yaml")
+    @pytest.mark.vcr()
+    def test_webhook_get(self, client: Client):
+        webhook = client.webhook.get(WEBHOOK_ID)
+        assert webhook.id == WEBHOOK_ID
+
+    @pytest.mark.default_cassette("test_webhooks.yaml")
+    @pytest.mark.vcr()
+    def test_webhooks(self, client: Client):
+        webhooks = client.webhooks()
+        assert len(webhooks) == 1
+        assert webhooks[0].id == WEBHOOK_ID
+
+    @pytest.mark.default_cassette("test_webhook_ping.yaml")
+    @pytest.mark.vcr()
+    def test_webhook_ping(self, client: Client):
+        event = client.webhook.ping(WEBHOOK_ID)
+        assert event.webhook_id == WEBHOOK_ID
+
 
 class TestAsyncClient:
     @pytest.mark.default_cassette("test_ping.yaml")
@@ -138,3 +164,28 @@ class TestAsyncClient:
         transactions = await aclient.transactions()
         assert len(transactions) == 1
         assert (await transactions[0]).id == TRANSACTION_ID
+
+    @pytest.mark.default_cassette("test_webhook.yaml")
+    @pytest.mark.vcr()
+    async def test_webhook(self, aclient):
+        webhook = await aclient.webhook(WEBHOOK_ID)
+        assert webhook.id == WEBHOOK_ID
+
+    @pytest.mark.default_cassette("test_webhook.yaml")
+    @pytest.mark.vcr()
+    async def test_webhook_get(self, aclient):
+        webhook = await aclient.webhook.get(WEBHOOK_ID)
+        assert webhook.id == WEBHOOK_ID
+
+    @pytest.mark.default_cassette("test_webhooks.yaml")
+    @pytest.mark.vcr()
+    async def test_webhooks(self, aclient):
+        webhooks = await aclient.webhooks()
+        assert len(webhooks) == 1
+        assert (await webhooks[0]).id == WEBHOOK_ID
+
+    @pytest.mark.default_cassette("test_webhook_ping.yaml")
+    @pytest.mark.vcr()
+    async def test_webhook_ping(self, aclient):
+        event = await aclient.webhook.ping(WEBHOOK_ID)
+        assert event.webhook_id == WEBHOOK_ID

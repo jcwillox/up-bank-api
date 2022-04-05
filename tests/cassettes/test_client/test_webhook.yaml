@@ -1,0 +1,62 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.27.1
+    method: GET
+    uri: https://api.up.com.au/api/v1/webhooks/549985d6-27b1-4c8f-bfa4-8cc86de2fdb7
+  response:
+    body:
+      yaml:
+        data:
+          type: webhooks
+          id: 549985d6-27b1-4c8f-bfa4-8cc86de2fdb7
+          attributes:
+            url: https://example.com/webhook-1
+            description: Webhook 1
+            createdAt: "2022-03-20T10:12:31+11:00"
+          relationships:
+            logs:
+              links:
+                related: https://api.up.com.au/api/v1/webhooks/549985d6-27b1-4c8f-bfa4-8cc86de2fdb7/logs
+          links:
+            self: https://api.up.com.au/api/v1/webhooks/549985d6-27b1-4c8f-bfa4-8cc86de2fdb7
+    headers:
+      Alt-Svc:
+      - clear
+      Cache-Control:
+      - max-age=0, private, must-revalidate
+      Content-Type:
+      - application/json; charset=utf-8
+      Referrer-Policy:
+      - strict-origin-when-cross-origin
+      Strict-Transport-Security:
+      - max-age=63072000; includeSubDomains
+      Transfer-Encoding:
+      - chunked
+      Vary:
+      - Accept, Origin
+      Via:
+      - 1.1 google
+      X-Content-Type-Options:
+      - nosniff
+      X-Download-Options:
+      - noopen
+      X-Frame-Options:
+      - SAMEORIGIN
+      X-Permitted-Cross-Domain-Policies:
+      - none
+      X-XSS-Protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+    url: https://api.up.com.au/api/v1/webhooks/549985d6-27b1-4c8f-bfa4-8cc86de2fdb7
+version: 1
