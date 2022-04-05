@@ -16,7 +16,7 @@ from ..models.accounts import AsyncAccount
 from ..models.categories import AsyncTag, AsyncCategory
 from ..models.pagination import AsyncPaginatedList
 from ..models.transactions import AsyncTransaction
-from ..models.webhooks import AsyncWebhook, AsyncWebhookEvent, AsyncWebhookLog
+from ..models.webhooks import AsyncWebhook, AsyncWebhookEvent, AsyncWebhookLog, Webhook
 
 try:
     import aiohttp
@@ -315,20 +315,20 @@ class AsyncWebhookAdapter(WebhookAdapterBase):
         """
         return AsyncWebhook(self._client, await self._handle_create(url, description))
 
-    async def ping(self, webhook_id: str) -> AsyncWebhookEvent:
+    async def ping(self, webhook: Union[str, Webhook]) -> AsyncWebhookEvent:
         """Pings a webhook by its unique id.
 
         Arguments:
-            webhook_id: The unique identifier for a webhook.
+            webhook: The webhook or webhook id to ping.
 
         Returns:
             The ping event response.
         """
-        return AsyncWebhookEvent(self._client, await self._handle_ping(webhook_id))
+        return AsyncWebhookEvent(self._client, await self._handle_ping(webhook))
 
     async def logs(
         self,
-        webhook_id: str,
+        webhook: Union[str, Webhook],
         *,
         limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
@@ -336,7 +336,7 @@ class AsyncWebhookAdapter(WebhookAdapterBase):
         """Retrieves the logs from a webhook by id.
 
         Arguments:
-            webhook_id: The unique identifier for a webhook.
+            webhook: The webhook or webhook id to fetch logs from.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
 
@@ -346,17 +346,17 @@ class AsyncWebhookAdapter(WebhookAdapterBase):
         return AsyncPaginatedList(
             self._client,
             AsyncWebhookLog,
-            await self._handle_logs(webhook_id, limit, page_size),
+            await self._handle_logs(webhook, limit, page_size),
             limit,
         )
 
-    async def delete(self, webhook_id: str) -> bool:
+    async def delete(self, webhook: Union[str, Webhook]) -> bool:
         """Deletes a webhook by its unique id.
 
         Arguments:
-            webhook_id: The unique identifier for a webhook.
+            webhook: The webhook or webhook id to delete.
 
         Returns:
             `True` if successful, otherwise raises exception.
         """
-        return await self._handle_delete(webhook_id)
+        return await self._handle_delete(webhook)

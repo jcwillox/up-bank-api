@@ -297,20 +297,20 @@ class WebhookAdapter(WebhookAdapterBase):
         """
         return Webhook(self._client, self._handle_create(url, description))
 
-    def ping(self, webhook_id: str) -> WebhookEvent:
+    def ping(self, webhook: Union[str, Webhook]) -> WebhookEvent:
         """Pings a webhook by its unique id.
 
         Arguments:
-            webhook_id: The unique identifier for a webhook.
+            webhook: The webhook or webhook id to ping.
 
         Returns:
             The ping event response.
         """
-        return WebhookEvent(self._client, self._handle_ping(webhook_id))
+        return WebhookEvent(self._client, self._handle_ping(webhook))
 
     def logs(
         self,
-        webhook_id: str,
+        webhook: Union[str, Webhook],
         *,
         limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
@@ -318,7 +318,7 @@ class WebhookAdapter(WebhookAdapterBase):
         """Retrieves the logs from a webhook by id.
 
         Arguments:
-            webhook_id: The unique identifier for a webhook.
+            webhook: The webhook or webhook id to fetch logs from.
             limit: The maximum number of records to return.
             page_size: The number of records to return in each page. (max appears to be 100)
 
@@ -328,17 +328,17 @@ class WebhookAdapter(WebhookAdapterBase):
         return PaginatedList(
             self._client,
             WebhookLog,
-            self._handle_logs(webhook_id, limit, page_size),
+            self._handle_logs(webhook, limit, page_size),
             limit,
         )
 
-    def delete(self, webhook_id: str) -> bool:
+    def delete(self, webhook: Union[str, Webhook]) -> bool:
         """Deletes a webhook by its unique id.
 
         Arguments:
-            webhook_id: The unique identifier for a webhook.
+            webhook: The webhook or webhook id to delete.
 
         Returns:
             `True` if successful, otherwise raises exception.
         """
-        return self._handle_delete(webhook_id)
+        return self._handle_delete(webhook)

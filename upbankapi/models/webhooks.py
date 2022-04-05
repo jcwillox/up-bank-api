@@ -57,7 +57,7 @@ class Webhook(ModelBase):
         Returns:
             The ping event response.
         """
-        return self._client.webhook.ping(self.id)
+        return self._client.webhook.ping(self)
 
     def logs(
         self,
@@ -74,7 +74,7 @@ class Webhook(ModelBase):
         Returns:
             A paginated list of the webhook logs.
         """
-        return self._client.webhook.logs(self.id, limit=limit, page_size=page_size)
+        return self._client.webhook.logs(self, limit=limit, page_size=page_size)
 
     def delete(self) -> bool:
         """Deletes this webhook.
@@ -82,7 +82,7 @@ class Webhook(ModelBase):
         Returns:
             `True` if successful, otherwise raises exception.
         """
-        return self._client.webhook.delete(self.id)
+        return self._client.webhook.delete(self)
 
     def __repr__(self) -> str:
         """Return the representation of the webhook."""
@@ -98,7 +98,7 @@ class AsyncWebhook(Webhook):
         Returns:
             The ping event response.
         """
-        return await self._client.webhook.ping(self.id)
+        return await self._client.webhook.ping(self)
 
     async def logs(
         self,
@@ -115,9 +115,7 @@ class AsyncWebhook(Webhook):
         Returns:
             A paginated list of the webhook logs.
         """
-        return await self._client.webhook.logs(
-            self.id, limit=limit, page_size=page_size
-        )
+        return await self._client.webhook.logs(self, limit=limit, page_size=page_size)
 
     async def delete(self) -> bool:
         """Deletes this webhook.
@@ -125,7 +123,7 @@ class AsyncWebhook(Webhook):
         Returns:
             `True` if successful, otherwise raises exception.
         """
-        return await self._client.webhook.delete(self.id)
+        return await self._client.webhook.delete(self)
 
 
 class WebhookResponse:

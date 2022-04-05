@@ -318,17 +318,19 @@ class WebhookAdapterBase(ABC):
 
     @abstractmethod
     def ping(
-        self, webhook_id: str
+        self, webhook: Union[str, Webhook]
     ) -> Union[WebhookEvent, Coroutine[Any, Any, AsyncWebhookEvent]]:
         ...
 
-    def _handle_ping(self, webhook_id: str):
-        return self._client.api(f"/webhooks/{webhook_id}/ping", method="POST")
+    def _handle_ping(self, webhook: Union[str, Webhook]):
+        if isinstance(webhook, Webhook):
+            webhook = webhook.id
+        return self._client.api(f"/webhooks/{webhook}/ping", method="POST")
 
     @abstractmethod
     def logs(
         self,
-        webhook_id: str,
+        webhook: Union[str, Webhook],
         *,
         limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
@@ -340,17 +342,23 @@ class WebhookAdapterBase(ABC):
 
     def _handle_logs(
         self,
-        webhook_id: str,
+        webhook: Union[str, Webhook],
         limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ):
+        if isinstance(webhook, Webhook):
+            webhook = webhook.id
         return self._client.api(
-            f"/webhooks/{webhook_id}/logs", params=Filters(page_size, limit)
+            f"/webhooks/{webhook}/logs", params=Filters(page_size, limit)
         )
 
     @abstractmethod
-    def delete(self, webhook_id: str) -> Union[bool, Coroutine[Any, Any, bool]]:
+    def delete(
+        self, webhook: Union[str, Webhook]
+    ) -> Union[bool, Coroutine[Any, Any, bool]]:
         ...
 
-    def _handle_delete(self, webhook_id: str):
-        return self._client.api(f"/webhooks/{webhook_id}", method="DELETE")
+    def _handle_delete(self, webhook: Union[str, Webhook]):
+        if isinstance(webhook, Webhook):
+            webhook = webhook.id
+        return self._client.api(f"/webhooks/{webhook}", method="DELETE")
