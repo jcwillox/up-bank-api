@@ -40,7 +40,6 @@ class AsyncClient(ClientBase):
             self._session = session
         else:
             self._session = aiohttp.ClientSession()
-        self._session.headers.update({"Authorization": f"Bearer {self._token}"})
 
     async def __aenter__(self):
         return self
@@ -56,7 +55,11 @@ class AsyncClient(ClientBase):
         params: Dict = None,
     ) -> Union[bool, Dict]:
         async with self._session.request(
-            method=method, json=body, params=params, url=f"{BASE_URL}{endpoint}"
+            method=method,
+            json=body,
+            params=params,
+            headers=self._headers,
+            url=f"{BASE_URL}{endpoint}",
         ) as response:
             return self._handle_response(await response.json(), response.status)
 

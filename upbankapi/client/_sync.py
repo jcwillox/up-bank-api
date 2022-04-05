@@ -35,7 +35,6 @@ class Client(ClientBase):
             self._session = session
         else:
             self._session = requests.Session()
-        self._session.headers.update({"Authorization": f"Bearer {self._token}"})
 
     def api(
         self,
@@ -45,7 +44,11 @@ class Client(ClientBase):
         params: Dict = None,
     ) -> Union[bool, Dict]:
         response = self._session.request(
-            method=method, json=body, params=params, url=f"{BASE_URL}{endpoint}"
+            method=method,
+            json=body,
+            params=params,
+            headers=self._headers,
+            url=f"{BASE_URL}{endpoint}",
         )
         return self._handle_response(response.json(), response.status_code)
 

@@ -34,7 +34,8 @@ class ClientBase(ABC):
     webhook: "WebhookAdapterBase"
 
     def __init__(self, token: str = None):
-        self._token = token if token else getenv("UP_TOKEN")
+        self._token: str = token if token else getenv("UP_TOKEN")
+        self._headers = {"Authorization": f"Bearer {self._token}"}
 
     @abstractmethod
     def api(
