@@ -1,9 +1,13 @@
+from __future__ import annotations
+
 import json
 from datetime import datetime
 from enum import Enum
 from typing import Optional, Dict
 
 from .common import ModelBase
+from .pagination import AsyncPaginatedList, PaginatedList
+from .transactions import AsyncTransaction, Transaction
 from ..const import DEFAULT_PAGE_SIZE
 
 
@@ -47,16 +51,16 @@ class Webhook(ModelBase):
         self.secret_key = attrs.get("secretKey")
         self.created_at = datetime.fromisoformat(attrs["createdAt"])
 
-    def ping(self):
+    def ping(self) -> WebhookEvent:
         """Sends a ping event to the webhook"""
         return self._client.webhook.ping(self.id)
 
     def logs(
         self,
         *,
-        limit: Optional[int] = None,
+        limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
-    ):
+    ) -> PaginatedList[WebhookLog]:
         """Returns the logs of this webhook.
 
         Arguments:
@@ -65,7 +69,7 @@ class Webhook(ModelBase):
         """
         return self._client.webhook.logs(self.id, limit=limit, page_size=page_size)
 
-    def delete(self):
+    def delete(self) -> bool:
         """Deletes the webhook."""
         return self._client.webhook.delete(self.id)
 
@@ -74,6 +78,32 @@ class Webhook(ModelBase):
         if self.description:
             return f"<Webhook '{self.id}': {self.url} ({self.description})>"
         return f"<Webhook '{self.id}': {self.url}>"
+
+
+class AsyncWebhook(Webhook):
+    async def ping(self) -> AsyncWebhookEvent:
+        """Sends a ping event to the webhook"""
+        return await self._client.webhook.ping(self.id)
+
+    async def logs(
+        self,
+        *,
+        limit: int = None,
+        page_size: int = DEFAULT_PAGE_SIZE,
+    ) -> AsyncPaginatedList[WebhookLog]:
+        """Returns the logs of this webhook.
+
+        Arguments:
+            limit: The maximum number of records to return.
+            page_size: The number of records to return in each page. (max appears to be 100)
+        """
+        return await self._client.webhook.logs(
+            self.id, limit=limit, page_size=page_size
+        )
+
+    async def delete(self) -> bool:
+        """Deletes the webhook."""
+        return await self._client.webhook.delete(self.id)
 
 
 class WebhookResponse:
@@ -96,7 +126,7 @@ class WebhookLog(ModelBase):
     id: str
     """The unique identifier for this log entry."""
 
-    event: "WebhookEvent"
+    event: WebhookEvent
     """The webhook event associated with this log entry."""
 
     response: Optional[WebhookResponse] = None
@@ -128,6 +158,10 @@ class WebhookLog(ModelBase):
         return f"<WebhookLog {self.status}>"
 
 
+class AsyncWebhookLog(WebhookLog):
+    event: AsyncWebhookEvent
+
+
 class WebhookEvent(ModelBase):
     """Representation of a WebhookEvent."""
 
@@ -154,11 +188,11 @@ class WebhookEvent(ModelBase):
         if "transaction" in relations:
             self.transaction_id = relations["transaction"]["data"]["id"]
 
-    def webhook(self):
+    def webhook(self) -> Webhook:
         """Fetch the details of the associated webhook."""
         return self._client.webhook.get(self.webhook_id)
 
-    def transaction(self):
+    def transaction(self) -> Transaction:
         """Fetch the details of the associated transaction."""
         if self.transaction_id:
             return self._client.transaction(self.transaction_id)
@@ -168,3 +202,14 @@ class WebhookEvent(ModelBase):
         if self.transaction_id:
             return f"<WebhookEvent {self.type}: webhook_id='{self.webhook_id}' transaction_id='{self.transaction_id}'>"
         return f"<WebhookEvent {self.type}: webhook_id='{self.webhook_id}'>"
+
+
+class AsyncWebhookEvent(WebhookEvent):
+    async def webhook(self) -> AsyncWebhook:
+        """Fetch the details of the associated webhook."""
+        return await self._client.webhook.get(self.webhook_id)
+
+    async def transaction(self) -> AsyncTransaction:
+        """Fetch the details of the associated transaction."""
+        if self.transaction_id:
+            return await self._client.transaction(self.transaction_id)
