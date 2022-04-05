@@ -1,0 +1,1 @@
+::: upbankapi.models.Account

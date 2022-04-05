@@ -1,0 +1,74 @@
+site_name: Up Bank API
+site_description: !ENV SITE_DESCRIPTION
+site_author: Joshua Cowie-Willox
+site_url: https://jcwillox.github.io/up-bank-api
+
+repo_name: jcwillox/up-bank-api
+repo_url: https://github.com/jcwillox/up-bank-api
+edit_uri: edit/main/docs/
+
+nav:
+  - Usage: "index.md"
+  - Reference:
+      - "reference/client.md"
+      - "reference/async_client.md"
+      - Models:
+          - "reference/models/accounts.md"
+          - "reference/models/categories.md"
+          - "reference/models/transactions.md"
+          - "reference/models/webhooks.md"
+      - "reference/enums.md"
+      - "reference/exceptions.md"
+
+theme:
+  name: "material"
+  icon:
+    logo: fontawesome/solid/play
+  features:
+    - navigation.instant
+    - navigation.expand
+    - navigation.top
+    - content.tabs.link
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: red
+      accent: yellow
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: red
+      accent: yellow
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+extra_css:
+  - stylesheets/extra.css
+
+plugins:
+  - search
+  - mkdocstrings:
+      watch:
+        - upbankapi
+      handlers:
+        python:
+          selection:
+            docstring_style: google
+          rendering:
+            members_order: source
+            show_root_heading: true
+            show_source: false
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: "#"
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
