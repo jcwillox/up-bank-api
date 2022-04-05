@@ -61,7 +61,7 @@ class AsyncClient(ClientBase):
             return self._handle_response(await response.json(), response.status)
 
     async def ping(self) -> str:
-        """Retrieves the users unique id and checks if the token in valid.
+        """Retrieves the users unique id and checks if the token is valid.
 
         Returns:
             The users unique id.

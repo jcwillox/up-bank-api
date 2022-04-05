@@ -2,6 +2,7 @@ import shutil
 from glob import glob
 
 shutil.rmtree("dist/", ignore_errors=True)
+shutil.rmtree("site/", ignore_errors=True)
 shutil.rmtree("build/", ignore_errors=True)
 shutil.rmtree(".pytest_cache/", ignore_errors=True)
 

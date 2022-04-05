@@ -50,7 +50,7 @@ class Client(ClientBase):
         return self._handle_response(response.json(), response.status_code)
 
     def ping(self) -> str:
-        """Retrieves the users unique id and checks if the token in valid.
+        """Retrieves the users unique id and checks if the token is valid.
 
         Returns:
             The users unique id.
