@@ -242,7 +242,7 @@ class Transaction(ModelBase):
         Raises:
             ValueError: If the transaction is not `categorizable`.
         """
-        return self._client.categorize(self, category=None)
+        return self._client.categorize(self, category)
 
     def add_tags(self, *tags: Union[str, Tag]) -> bool:
         """Add tags to this transaction.
@@ -288,7 +288,7 @@ class AsyncTransaction(Transaction):
         Raises:
             ValueError: If the transaction is not `categorizable`.
         """
-        return await self._client.categorize(self, category=None)
+        return await self._client.categorize(self, category)
 
     async def add_tags(self, *tags: Union[str, Tag]) -> bool:
         """Add tags to this transaction.
