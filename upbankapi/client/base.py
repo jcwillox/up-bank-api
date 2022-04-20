@@ -180,7 +180,7 @@ class ClientBase(ABC):
 
     @abstractmethod
     def add_tags(
-        self, transaction: Union[str, Transaction], *tags: Tag
+        self, transaction: Union[str, Transaction], *tags: Union[str, Tag]
     ) -> Union[bool, Coroutine[Any, Any, bool]]:
         ...
 

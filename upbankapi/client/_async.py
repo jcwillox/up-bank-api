@@ -184,7 +184,9 @@ class AsyncClient(ClientBase):
             limit,
         )
 
-    async def add_tags(self, transaction: Union[str, Transaction], *tags: Tag) -> bool:
+    async def add_tags(
+        self, transaction: Union[str, Transaction], *tags: Union[str, Tag]
+    ) -> bool:
         """Add tags to a given transaction.
 
         Arguments:

@@ -166,7 +166,7 @@ class Client(ClientBase):
             limit,
         )
 
-    def add_tags(self, transaction: Union[str, Transaction], *tags: Tag) -> bool:
+    def add_tags(self, transaction: Union[str, Transaction], *tags: Union[str, Tag]) -> bool:
         """Add tags to a given transaction.
 
         Arguments:

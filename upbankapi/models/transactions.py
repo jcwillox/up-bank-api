@@ -244,7 +244,7 @@ class Transaction(ModelBase):
         """
         return self._client.categorize(self, category=None)
 
-    def add_tags(self, *tags: Tag) -> bool:
+    def add_tags(self, *tags: Union[str, Tag]) -> bool:
         """Add tags to this transaction.
 
         Arguments:
@@ -290,7 +290,7 @@ class AsyncTransaction(Transaction):
         """
         return await self._client.categorize(self, category=None)
 
-    async def add_tags(self, *tags: Tag) -> bool:
+    async def add_tags(self, *tags: Union[str, Tag]) -> bool:
         """Add tags to this transaction.
 
         Arguments:
