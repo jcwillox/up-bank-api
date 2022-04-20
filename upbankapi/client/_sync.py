@@ -18,6 +18,7 @@ from ..models import (
     WebhookLog,
     Category,
 )
+from ..models.common import RateLimit
 from ..models.pagination import PaginatedList
 
 
@@ -25,6 +26,9 @@ class Client(ClientBase):
     """Synchronous client for interacting with Up's API"""
 
     webhook: "WebhookAdapter"
+
+    rate_limit: RateLimit
+    """The information regarding the current rate limiting status."""
 
     def __init__(self, token: str = None, session: requests.Session = None):
         super().__init__(token)
@@ -51,8 +55,10 @@ class Client(ClientBase):
             url=f"{BASE_URL}{endpoint}",
         )
         if response.status_code == 204:
-            return True
-        return self._handle_response(response.json(), response.status_code)
+            data = {}
+        else:
+            data = response.json()
+        return self._handle_response(data, response.status_code, dict(response.headers))
 
     def ping(self) -> str:
         """Retrieves the users unique id and checks if the token is valid.
@@ -166,7 +172,9 @@ class Client(ClientBase):
             limit,
         )
 
-    def add_tags(self, transaction: Union[str, Transaction], *tags: Union[str, Tag]) -> bool:
+    def add_tags(
+        self, transaction: Union[str, Transaction], *tags: Union[str, Tag]
+    ) -> bool:
         """Add tags to a given transaction.
 
         Arguments:

@@ -505,6 +505,8 @@ The default is no limit, so it will return all records.
 
 ## Rate Limiting
 
-Up's API is rate limited, and a `RateLimitExceededException` will be raised if you exceed this. It's recommended that if you are iterating over transactions at you use a `limit` or `slice` to avoid fetching all transactions.
+Up's API is rate limited, and a `RateLimitExceededException` will be raised if you exceed this. After making a request to the API the number of remaining requests will be available through `#!python client.rate_limit.remaining`. The limit appears to be `1000 requests/h`.
 
-When fetching a large number of transactions, you should increase the `page_size` option to reduce the number of individual requests made.
+It's recommended that if you are iterating over transactions at you use a `limit` or `slice` to avoid fetching all transactions.
+
+Additionally, when fetching a large number of transactions, you should increase the `page_size` option to reduce the number of individual requests made.

@@ -14,6 +14,7 @@ from ..models import (
 )
 from ..models.accounts import AsyncAccount
 from ..models.categories import AsyncTag, AsyncCategory
+from ..models.common import RateLimit
 from ..models.pagination import AsyncPaginatedList
 from ..models.transactions import AsyncTransaction
 from ..models.webhooks import AsyncWebhook, AsyncWebhookEvent, AsyncWebhookLog, Webhook
@@ -30,6 +31,9 @@ class AsyncClient(ClientBase):
     """Asynchronous client for interacting with Up's API"""
 
     webhook: "AsyncWebhookAdapter"
+
+    rate_limit: RateLimit
+    """The information regarding the current rate limiting status."""
 
     def __init__(self, token: str = None, session: aiohttp.ClientSession = None):
         super().__init__(token)
@@ -62,8 +66,10 @@ class AsyncClient(ClientBase):
             url=f"{BASE_URL}{endpoint}",
         ) as response:
             if response.status == 204:
-                return True
-            return self._handle_response(await response.json(), response.status)
+                data = {}
+            else:
+                data = await response.json()
+            return self._handle_response(data, response.status, dict(response.headers))
 
     async def ping(self) -> str:
         """Retrieves the users unique id and checks if the token is valid.

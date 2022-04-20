@@ -3,7 +3,7 @@ from datetime import datetime
 from os import getenv
 from typing import Union, Dict, Coroutine, Any, Optional, List
 
-from ..const import DEFAULT_PAGE_SIZE
+from ..const import DEFAULT_PAGE_SIZE, RATE_LIMIT_HEADER
 from ..exceptions import (
     NotAuthorizedException,
     RateLimitExceededException,
@@ -24,6 +24,7 @@ from ..models import (
 )
 from ..models.accounts import AsyncAccount
 from ..models.categories import AsyncTag, AsyncCategory
+from ..models.common import RateLimit
 from ..models.pagination import PaginatedList, AsyncPaginatedList
 from ..models.transactions import AsyncTransaction
 from ..models.webhooks import AsyncWebhook, AsyncWebhookEvent, AsyncWebhookLog
@@ -32,10 +33,15 @@ from ..utils import Filters
 
 class ClientBase(ABC):
     webhook: "WebhookAdapterBase"
+    """Property for accessing webhook methods."""
+
+    rate_limit: RateLimit
+    """The information regarding the current rate limiting status."""
 
     def __init__(self, token: str = None):
         self._token: str = token if token else getenv("UP_TOKEN")
         self._headers = {"Authorization": f"Bearer {self._token}"}
+        self.rate_limit = RateLimit()
 
     @abstractmethod
     def api(
@@ -43,9 +49,12 @@ class ClientBase(ABC):
     ) -> Union[bool, Dict, Coroutine[Any, Any, Union[bool, Dict]]]:
         ...
 
-    @staticmethod
-    def _handle_response(data: Dict, status: int) -> Union[bool, Dict]:
-        # this should have been checked by any calling methods already
+    def _handle_response(
+        self, data: Dict, status: int, headers: Optional[Dict]
+    ) -> Union[bool, Dict]:
+        if headers and RATE_LIMIT_HEADER in headers:
+            self.rate_limit.remaining = int(headers[RATE_LIMIT_HEADER])
+
         if status == 204:
             return True
 

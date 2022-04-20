@@ -56,3 +56,11 @@ class MoneyObject:
 
     def __repr__(self):
         return f"<MoneyObject {self.value} {self.currency}>"
+
+
+class RateLimit:
+    """Holds information regarding the current rate limiting status."""
+
+    def __init__(self):
+        self.remaining: int = -1
+        """The number of requests remaining."""
