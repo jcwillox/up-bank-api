@@ -257,24 +257,33 @@ class ClientBase(ABC):
         limit: int = None,
         page_size: int = DEFAULT_PAGE_SIZE,
     ):
-        filters = Filters(
-            page_size,
-            limit,
-            {"status": status, "since": since, "until": until, "tag": tag},
-        )
+        if tag and isinstance(tag, Tag):
+            tag = tag.id
 
-        if category:
-            if isinstance(category, str):
-                filters.filter("category", category)
-            else:
-                filters.filter("category", category.id)
+        if category and isinstance(category, PartialCategory):
+            category = category.id
 
-        endpoint = "/transactions"
         if account:
             if isinstance(account, Account):
                 account = account.id
             endpoint = f"/accounts/{account}/transactions"
-        return self.api(endpoint, params=filters)
+        else:
+            endpoint = "/transactions"
+
+        return self.api(
+            endpoint,
+            params=Filters(
+                page_size,
+                limit,
+                {
+                    "status": status,
+                    "since": since,
+                    "until": until,
+                    "tag": tag,
+                    "category": category,
+                },
+            ),
+        )
 
     ### WEBHOOKS ###
     @abstractmethod
