@@ -61,6 +61,8 @@ class AsyncClient(ClientBase):
             headers=self._headers,
             url=f"{BASE_URL}{endpoint}",
         ) as response:
+            if response.status == 204:
+                return True
             return self._handle_response(await response.json(), response.status)
 
     async def ping(self) -> str:

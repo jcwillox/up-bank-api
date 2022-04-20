@@ -50,6 +50,8 @@ class Client(ClientBase):
             headers=self._headers,
             url=f"{BASE_URL}{endpoint}",
         )
+        if response.status_code == 204:
+            return True
         return self._handle_response(response.json(), response.status_code)
 
     def ping(self) -> str:

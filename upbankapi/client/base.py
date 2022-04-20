@@ -45,6 +45,7 @@ class ClientBase(ABC):
 
     @staticmethod
     def _handle_response(data: Dict, status: int) -> Union[bool, Dict]:
+        # this should have been checked by any calling methods already
         if status == 204:
             return True
 
