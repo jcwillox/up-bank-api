@@ -1,0 +1,62 @@
+name: Report an issue
+description: Report an issue with this project.
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This issue form is for reporting bugs, you should search through
+        the existing issues to see if others have had the same problem.
+
+        Try fill as many fields as you can, to make it easier to address the issue.
+  - type: textarea
+    attributes:
+      label: The problem
+      description: >-
+        Describe the issue you are experiencing here, to communicate to the
+        maintainers. Tell us what you were trying to do and what happened.
+
+        Provide a clear and concise description of what the problem is.
+  - type: markdown
+    attributes:
+      value: |
+        ## Environment
+  - type: input
+    id: version
+    attributes:
+      label: What version of Up Bank API has the issue?
+      description: >
+        ```bash
+        pip show up-bank-api
+        ```
+  - type: input
+    id: python_version
+    attributes:
+      label: What version of Python are you running?
+      placeholder: Python 3.x.x
+  - type: input
+    id: operating_system
+    attributes:
+      label: What operating system are you using?
+      placeholder: Windows, macOS, Linux
+  - type: markdown
+    attributes:
+      value: |
+        # Details
+  - type: textarea
+    attributes:
+      label: Example snippet
+      description: |
+        If applicable, please provide an example piece of code that can help reproduce this problem.
+      render: python3
+  - type: textarea
+    attributes:
+      label: Anything in the logs that might be useful?
+      description: |
+        For example, error message, or stack traces.
+      render: python3
+  - type: textarea
+    attributes:
+      label: Additional information
+      description: >
+        If you have any additional information for us, use the field below.
