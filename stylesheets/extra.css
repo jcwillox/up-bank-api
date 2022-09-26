@@ -1,0 +1,16 @@
+/* indentation */
+div.doc-contents {
+  padding-left: 25px;
+  border-left: .05rem solid var(--md-default-fg-color--lightest);
+}
+
+/* hide __repr__ methods */
+.doc.doc-heading[id$=__repr__],
+a.md-nav__link[href$=__repr__],
+.doc.doc-heading[id$=__repr__] + div.doc.doc-contents  {
+  display: none;
+}
+
+nav a.md-logo > svg {
+  transform: rotate(270deg);
+}
