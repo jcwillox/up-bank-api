@@ -8,7 +8,7 @@ REQUIRES = [
 ]
 
 DOCS_REQUIRE = [
-    "mkdocs-material>=8.2.8,<9",
+    "mkdocs-material>=8.5.3,<9",
     "mkdocstrings[python]>=0.18.1",
 ]
 
