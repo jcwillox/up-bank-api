@@ -1,0 +1,73 @@
+name: "Release"
+
+on:
+  push:
+    branches:
+      - "beta"
+      - "alpha"
+  workflow_dispatch:
+    inputs:
+      draft:
+        type: boolean
+        description: "Draft release"
+        default: false
+      release_type:
+        type: choice
+        description: "Release type"
+        default: "auto"
+        options:
+          - "auto"
+          - "patch"
+          - "minor"
+          - "major"
+
+jobs:
+  publish:
+    name: "Publish"
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: ${{ steps.release.outputs.url }}
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - name: "Checkout the repository"
+        uses: actions/checkout@v4
+
+      - name: "Setup node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: "Install uv"
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: "Setup Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: "Release Package 📦"
+        run: corepack enable && pnpm dlx @jcwillox/semantic-release-config
+        id: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SEMANTIC_RELEASE_GITHUB_DRAFT: ${{ inputs.draft }}
+          SEMANTIC_RELEASE_FORCE_RELEASE: ${{ inputs.release_type }}
+          SEMANTIC_RELEASE_CMD_PREPARE: |
+            echo "url=https://pypi.org/project/up-bank-api/${nextRelease.version}" >> $GITHUB_OUTPUT
+            sed -i 's/^version = ".*"/version = "${nextRelease.version}"/' pyproject.toml
+            uv build
+          SEMANTIC_RELEASE_CMD_PUBLISH: |
+            uv publish 1>&2
+            echo '{"name": "pypi package", "url": "https://pypi.org/project/up-bank-api/${nextRelease.version}"}'
+
+      - name: "Publish to Test PyPI 📦"
+        run: uv publish
+        env:
+          UV_PUBLISH_URL: https://test.pypi.org/legacy/

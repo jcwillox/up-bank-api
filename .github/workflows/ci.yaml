@@ -1,0 +1,92 @@
+name: "CI"
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    name: "Lint"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout the repository"
+        uses: actions/checkout@v4
+
+      - name: "Check format"
+        uses: psf/black@stable
+
+  test:
+    name: "Build & Test"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout the repository"
+        uses: actions/checkout@v4
+
+      - name: "Install uv"
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: "Setup Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: "Install dependencies"
+        run: uv sync --all-extras
+
+      - name: "Run Tests"
+        run: uv run pytest
+
+      - name: "Build package"
+        run: uv build
+
+      - name: "Upload dist"
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  deploy:
+    name: "Deploy"
+    runs-on: ubuntu-latest
+    needs: [lint, test]
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: testpypi
+      url: ${{ steps.vars.outputs.url }}
+    permissions:
+      id-token: write
+    steps:
+      - name: "Checkout the repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: "Install uv"
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: "Setup Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: "Get and update version"
+        id: vars
+        run: |
+          VERSION="$(git describe --tags --abbrev=0 | sed 's/^v//').dev$(date +%s)"
+          PKG_URL="https://test.pypi.org/project/up-bank-api/$VERSION"
+          echo "$PKG_URL"
+          echo "url=$PKG_URL" >> $GITHUB_OUTPUT
+          sed -i "s/^version = \".*\"/version = \"$VERSION\"/" pyproject.toml
+
+      - name: "Build package"
+        run: uv build
+
+      - name: "Publish to Test PyPI 📦"
+        run: uv publish
+        env:
+          UV_PUBLISH_URL: https://test.pypi.org/legacy/

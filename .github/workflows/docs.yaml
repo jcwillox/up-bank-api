@@ -1,0 +1,33 @@
+name: "Docs"
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  deploy_docs:
+    name: "Deploy Docs"
+    runs-on: ubuntu-latest
+    concurrency: deploy-docs-${{ github.ref }}
+    steps:
+      - name: "Checkout the repository"
+        uses: actions/checkout@v4
+
+      - name: "Install uv"
+        uses: astral-sh/setup-uv@v3
+        with:
+          enable-cache: true
+
+      - name: "Setup Python"
+        uses: actions/setup-python@v5
+        with:
+          python-version-file: ".python-version"
+
+      - name: "Install dependencies"
+        run: uv sync --all-extras --group docs
+
+      - name: "Build & Deploy 🚀"
+        run: uv run mkdocs gh-deploy --force
+        env:
+          SITE_DESCRIPTION: ${{ github.event.repository.description }}

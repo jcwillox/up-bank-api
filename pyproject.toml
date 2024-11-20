@@ -1,6 +1,53 @@
-[build-system]
-requires = ["setuptools>=42", "wheel", "setuptools_scm>=6.2"]
-build-backend = "setuptools.build_meta"
+[project]
+name = "up-bank-api"
+version = "0.0.0.dev0"
+description = "💎 Typed python client for Up's banking API"
+readme = "README.md"
+authors = [{ name = "Josh Willox", email = "joshwillox@gmail.com" }]
+requires-python = ">=3.8"
+dependencies = [
+    "requests>=2.32.3",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Typing :: Typed"
+]
 
-[tool.setuptools_scm]
-local_scheme = "no-local-version"
+[project.urls]
+Homepage = "https://jcwillox.github.io/up-bank-api"
+Documentation = "https://jcwillox.github.io/up-bank-api"
+Repository = "https://github.com/jcwillox/up-bank-api"
+"Release Notes" = "https://github.com/jcwillox/up-bank-api/releases"
+Issues = "https://github.com/jcwillox/up-bank-api/issues"
+Funding = "https://ko-fi.com/jcwillox"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["upbankapi"]
+
+[project.optional-dependencies]
+async = [
+    "aiohttp>=3.10.11",
+]
+
+[dependency-groups]
+docs = [
+    "mkdocs-material>=9.5.44",
+    "mkdocstrings[python]>=0.26.1",
+]
+dev = [
+    "pytest>=8.3.3",
+    "pytest-asyncio>=0.24.0",
+    "pytest-recording>=0.13.2",
+    "pyyaml>=6.0.2",
+]
