@@ -1,4 +1,5 @@
 """Models used for deserializing the data from the API."""
+
 from .pagination import PaginatedList, AsyncPaginatedList
 from .accounts import AccountType, OwnershipType, Account
 from .transactions import TransactionStatus, CardPurchaseMethodEnum, Transaction
